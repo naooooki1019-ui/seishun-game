@@ -3,103 +3,115 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>青春を取り戻せ！ v1.2</title>
+<title>青春を取り戻せ！ v1.3</title>
 <style>
 *{box-sizing:border-box}
+:root{--ink:#18212b;--paper:#f4efe5;--gold:#d7aa68;--navy:#1a2635}
 body{
-  margin:0;background:#111722;color:#202735;
-  font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic",sans-serif;
+ margin:0;background:#0d1218;color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
 }
-#app{max-width:1100px;margin:auto;background:#f5f1e8;min-height:100vh}
+#app{max-width:1180px;margin:auto;min-height:100vh;background:var(--paper)}
 header{
-  background:linear-gradient(135deg,#24364b,#172434);
-  color:#fff;padding:14px 18px;display:flex;justify-content:space-between;
-  align-items:center;border-bottom:3px solid #c89558
+ height:72px;padding:12px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between;
+ background:linear-gradient(110deg,#111c29,#263b52 58%,#172330);border-bottom:1px solid #c99958;
 }
-h1{font-size:21px;margin:0;letter-spacing:.04em}
-.small{font-size:11px;opacity:.72;margin-top:3px}
-.date{font-weight:bold;font-size:14px}
-main{padding:12px}
+h1{margin:0;font-size:22px;letter-spacing:.08em;font-weight:800}
+.small{font-size:10px;opacity:.62;letter-spacing:.08em;margin-top:3px}
+.date{font-size:15px;font-weight:800;letter-spacing:.05em}
+main{padding:14px}
 .hud{margin-bottom:10px}
 .condition-card{
-  background:#fff;border:1px solid #ddd4c4;border-radius:12px;
-  padding:9px 13px;display:flex;align-items:center;gap:14px;
-  box-shadow:0 2px 8px #0000000d
+ display:flex;align-items:center;gap:13px;padding:8px 13px;background:#fff;
+ border:1px solid #ded5c7;border-radius:10px;box-shadow:0 4px 14px #0000000c;
 }
-.condition-label{font-size:10px;letter-spacing:.12em;color:#7a6b5a;font-weight:bold}
-#condition{font-size:13px;line-height:1.45}
+.condition-label{font-size:9px;letter-spacing:.16em;font-weight:900;color:#8a765e}
+#condition{font-size:12px;color:#43505b}
 .scene{
-  height:min(70vw,650px);min-height:480px;position:relative;overflow:hidden;
-  border-radius:16px;background:#b8d0dd;box-shadow:0 8px 28px #0003
+ position:relative;height:min(72vw,690px);min-height:510px;overflow:hidden;border-radius:17px;
+ background:#8aaabd;box-shadow:0 12px 34px #0006;
+ isolation:isolate;
 }
-.bg,.shade,.char{position:absolute;inset:0}
+.bg{position:absolute;inset:0;z-index:0}
 .bg svg{width:100%;height:100%;display:block}
-.shade{
-  background:linear-gradient(180deg,#00000000 30%,#101722c4 100%);
-  pointer-events:none
+.scene:after{
+ content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:linear-gradient(180deg,#07111a12 25%,#07111a30 52%,#07111a9a 100%);
 }
 .char{
-  inset:auto 50% 78px auto;transform:translateX(50%);
-  width:min(410px,56vw);filter:drop-shadow(0 12px 8px #0005);
-  pointer-events:none;z-index:2
+ position:absolute;z-index:2;right:8%;bottom:132px;width:min(420px,45vw);
+ filter:drop-shadow(0 18px 14px #0007);
+ transform-origin:center bottom;
+ animation:enter .55s ease-out;
 }
 .char svg{width:100%;height:auto;display:block}
+.char.narration{display:none}
+@keyframes enter{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
 .dialog{
-  position:absolute;left:14px;right:14px;bottom:12px;
-  background:#fffffff5;border:1px solid #ffffff;
-  border-radius:13px;padding:12px 14px;
-  box-shadow:0 8px 26px #0005;z-index:3
+ position:absolute;left:2.4%;right:2.4%;bottom:14px;z-index:3;
+ padding:0 18px 16px;border-radius:15px;
+ background:linear-gradient(180deg,#101b28e9,#0b141eea);
+ border:1px solid #ffffff2c;box-shadow:0 10px 34px #0008;
+ backdrop-filter:blur(8px);
 }
-.name-row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
-.name{font-weight:bold;color:#2e526f}
+.name-row{display:flex;align-items:end;gap:8px;margin-top:-18px;margin-bottom:8px}
+.name{
+ min-width:110px;padding:8px 18px;border-radius:9px 9px 3px 3px;
+ background:linear-gradient(135deg,#d7aa68,#a87539);color:#fff;font-size:15px;font-weight:900;
+ box-shadow:0 5px 14px #0005;
+}
 .role{
-  font-size:10px;padding:2px 7px;border-radius:999px;
-  background:#e8edf1;color:#607080;font-weight:bold
+ margin-bottom:4px;padding:4px 8px;border-radius:999px;background:#ffffff16;color:#dce5ec;
+ font-size:9px;font-weight:800;letter-spacing:.06em;border:1px solid #ffffff18
 }
-.text{font-size:15px;line-height:1.65;min-height:48px}
-.choice-label{
-  font-size:10px;color:#7a6b5a;font-weight:bold;
-  letter-spacing:.08em;margin-top:7px
+.text{color:#f6f7f7;font-size:15px;line-height:1.72;min-height:54px;text-shadow:0 1px 2px #000}
+.choice-label{color:#d5b176;font-size:9px;font-weight:900;letter-spacing:.18em;margin:6px 0 6px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice{
+ display:flex;align-items:center;gap:10px;text-align:left;padding:10px 11px;border-radius:10px;
+ background:#f5f0e7f2;color:#253544;border:1px solid #fff;box-shadow:0 3px 9px #0003;
+ transition:transform .12s ease,background .12s ease;
 }
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:5px}
-button{
-  border:0;border-radius:9px;padding:10px;cursor:pointer;
-  font-weight:bold;font-family:inherit
+.choice:hover{background:#fff;transform:translateY(-1px)}
+.num{
+ width:22px;height:22px;display:grid;place-items:center;flex:none;border-radius:50%;
+ background:#26394d;color:#fff;font-size:11px;font-weight:900
 }
-.choice{background:#e9eef1;color:#23384e;text-align:left}
-.choice:hover{background:#d8e4eb}
-.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
-.controls button{background:#26394f;color:#fff}
-.controls .primary{background:#b2763f;min-width:120px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.controls button{
+ background:#1f3042;color:#fff;border:1px solid #31465a;border-radius:9px;padding:9px 14px;
+ font-weight:800;font-family:inherit
+}
+.controls .primary{background:#a9743f;border-color:#bd8950;min-width:120px}
 .bottom{margin-top:8px}
 .log-card{
-  background:#fff;border:1px solid #ddd6ca;border-radius:10px;
-  padding:8px 11px;color:#53616e
+ background:#fff;border:1px solid #ded6c9;border-radius:10px;padding:8px 11px;color:#56626b
 }
-.log-card summary{cursor:pointer;font-size:12px;font-weight:bold}
-.log{font-size:11px;line-height:1.55;max-height:110px;overflow:auto;margin-top:7px}
+.log-card summary{cursor:pointer;font-size:11px;font-weight:900}
+.log{font-size:10px;line-height:1.6;max-height:120px;overflow:auto;margin-top:7px}
 .overlay{
-  position:fixed;inset:0;background:#111827cc;display:none;
-  align-items:center;justify-content:center;padding:16px;z-index:5
+ position:fixed;inset:0;background:#0a1017d9;display:none;align-items:center;justify-content:center;
+ padding:16px;z-index:10
 }
-.modal{width:min(680px,100%);background:#fff;border-radius:14px;padding:17px}
-.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.slots button{background:#eef2f4}
+.modal{width:min(680px,100%);background:#fffaf2;border-radius:15px;padding:18px;box-shadow:0 20px 60px #0008}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slots button{background:#edf1f3}
 @media(max-width:700px){
-  header{padding:12px 14px}
-  h1{font-size:18px}
-  .scene{height:650px;min-height:0}
-  .char{width:72vw;bottom:92px}
-  .dialog{left:9px;right:9px;bottom:8px;padding:10px 11px}
-  .text{font-size:14px;min-height:45px}
-  .choices{grid-template-columns:1fr}
-  .condition-card{padding:8px 11px}
+ header{height:62px;padding:10px 13px} h1{font-size:18px}.date{font-size:13px}
+ main{padding:9px}.scene{height:680px;min-height:0;border-radius:13px}
+ .char{width:78vw;right:3%;bottom:205px}
+ .dialog{left:8px;right:8px;bottom:8px;padding:0 10px 10px;border-radius:12px}
+ .name-row{margin-top:-15px}.name{font-size:14px;min-width:94px;padding:7px 13px}
+ .text{font-size:13px;line-height:1.62;min-height:48px}
+ .choices{grid-template-columns:1fr;gap:6px}.choice{padding:9px 10px}
+ .choice-label{margin-top:4px}.condition-card{padding:7px 10px}
+ .controls button{padding:8px 11px}
 }
 </style>
 </head>
 <body>
 <div id="app">
-<header><div><h1>青春を取り戻せ！</h1><div class="small">本番版 v1.2 / 軽量ゲームエンジン</div></div><div class="date" id="date"></div></header>
+<header><div><h1>青春を取り戻せ！</h1><div class="small">本番版 v1.3 / STORY EDITION</div></div><div class="date" id="date"></div></header>
 <main>
 <div class="hud">
  <div class="condition-card">
@@ -135,206 +147,385 @@ button{
 "use strict";
 
 const GAME_KEY="seishun_save_";
-const names={study:"学力",sports:"運動",art:"感性",social:"社交",luck:"運"};
 const charData={
- misaki:{name:"美咲",affection:38,trust:24,desc:"明るく面倒見のいいクラスメイト。",type:"girl"},
- kenta:{name:"健太",affection:31,trust:34,desc:"軽口が多いが頼れる友人。",type:"boy"},
- teacher:{name:"佐藤先生",affection:22,trust:28,desc:"生徒をよく見ている担任。",type:"teacher"}
+  misaki:{name:"美咲",affection:38,trust:24,desc:"明るく面倒見のいいクラスメイト。",type:"girl"},
+  kenta:{name:"健太",affection:31,trust:34,desc:"軽口が多いが頼れる友人。",type:"boy"},
+  teacher:{name:"佐藤先生",affection:22,trust:28,desc:"生徒をよく見ている担任。",type:"teacher"}
 };
 
 function freshState(){
- return {
-  version:1,month:4,day:8,phase:"morning",stamina:80,money:5000,
-  stats:{study:30,sports:30,art:30,social:30,luck:30},
-  relations:JSON.parse(JSON.stringify(charData)),
-  flags:{metMisaki:true,festival:false},
-  log:[]
- };
+  return {
+    version:2,month:4,day:8,phase:"morning",stamina:80,money:5000,
+    stats:{study:30,sports:30,art:30,social:30,luck:30},
+    relations:JSON.parse(JSON.stringify(charData)),
+    flags:{metMisaki:true,metKenta:false,festival:false},
+    log:[],
+    currentId:"apr08_morning"
+  };
 }
 let state=freshState();
 
-const events=[
- {id:"m1",month:4,phase:"morning",speaker:"美咲",who:"misaki",bg:"classroom",
-  text:"「おはよう。……今日、なんか眠そうじゃない？」",
-  choices:[
-   ["笑ってごまかす",{social:2,stamina:-4},{misaki:{affection:3}}],
-   ["正直に眠いと言う",{social:1,stamina:1},{misaki:{trust:3}}],
-   ["勉強していたと言う",{study:3,stamina:-7},{misaki:{affection:1}}],
-   ["そっとしておく",{stamina:2},{}]
- ]},
- {id:"a1",month:4,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
-  text:"「放課後どうする？ まだ新学期だし、街でも見て回るか？」",
-  choices:[
-   ["一緒に行く",{social:3,money:-500},{kenta:{trust:4}}],
-   ["図書室へ行く",{study:4,stamina:-5},{}],
-   ["部活を見に行く",{sports:3,stamina:-8},{}],
-   ["今日は帰る",{stamina:8},{}]
- ]},
- {id:"r1",month:5,phase:"after",speaker:"美咲",who:"misaki",bg:"rooftop",
-  text:"屋上。風に吹かれながら、美咲がぽつりと言った。「高校生活って、思ったより短いのかもね」",
-  choices:[
-   ["「まだ始まったばかりだよ」",{social:2},{misaki:{affection:5,trust:2}}],
-   ["「後悔しないようにしたい」",{luck:2},{misaki:{trust:5}}],
-   ["冗談で返す",{social:3},{misaki:{affection:2}}],
-   ["黙って景色を見る",{art:2},{misaki:{trust:2}}]
- ]}
-];
+const events={
+  apr08_morning:{
+    id:"apr08_morning",month:4,phase:"morning",speaker:"美咲",who:"misaki",bg:"classroom",
+    text:"「おはよう。……今日、なんか眠そうじゃない？」",
+    choices:[
+      ["笑ってごまかす",{social:2,stamina:-4},{misaki:{affection:3}},"apr08_after"],
+      ["正直に眠いと言う",{social:1,stamina:1},{misaki:{trust:3}},"apr08_after"],
+      ["「昨日、遅くまで勉強してて」",{study:3,stamina:-7},{misaki:{affection:1}},"apr08_after"],
+      ["軽く会釈して席につく",{stamina:2},{}, "apr08_after"]
+    ]
+  },
+  apr08_after:{
+    id:"apr08_after",month:4,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
+    text:"放課後。廊下で、同じクラスの健太が声をかけてきた。「なあ、まだ新学期だしさ。駅前、ちょっと見て回らない？」",
+    choices:[
+      ["「いいな。行こう」",{social:3,money:-500},{kenta:{trust:4},"flag:metKenta":true},"apr09_morning"],
+      ["「今日は図書室に行くよ」",{study:4,stamina:-5},{kenta:{affection:2}},"apr09_morning"],
+      ["「部活を見てから考える」",{sports:3,stamina:-8},{kenta:{trust:2}},"apr09_morning"],
+      ["「今日は帰る。また今度」",{stamina:8},{kenta:{trust:1}},"apr09_morning"]
+    ]
+  },
+  apr09_morning:{
+    id:"apr09_morning",month:4,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    text:"翌朝。ホームルームで佐藤先生が言った。「三年生の一年は短い。進路も大事だが、それだけで終わらせるなよ」",
+    choices:[
+      ["真剣に話を聞く",{study:2,social:1},{teacher:{trust:3}},"apr09_after"],
+      ["進路について質問する",{study:4},{teacher:{trust:5}},"apr09_after"],
+      ["友達と目を合わせて笑う",{social:2},{teacher:{affection:1}},"apr09_after"],
+      ["眠気に耐える",{stamina:-3},{}, "apr09_after"]
+    ]
+  },
+  apr09_after:{
+    id:"apr09_after",month:4,phase:"after",speaker:"美咲",who:"misaki",bg:"classroom",
+    text:"放課後、美咲が机の横に立った。「ねえ。せっかく三年生なんだし……今年、何か一緒にやってみない？」",
+    choices:[
+      ["「もちろん。何がしたい？」",{social:2},{misaki:{affection:5,trust:2}},"apr10_morning"],
+      ["「勉強会とか？」",{study:3},{misaki:{trust:4}},"apr10_morning"],
+      ["「文化祭、面白そう」",{art:3},{misaki:{affection:3}},"apr10_morning"],
+      ["「まだ考え中かな」",{luck:1},{misaki:{affection:1}},"apr10_morning"]
+    ]
+  },
+  apr10_morning:{
+    id:"apr10_morning",month:4,phase:"morning",speaker:"健太",who:"kenta",bg:"corridor",
+    text:"朝。健太が笑いながら肩を叩く。「昨日の話さ、俺、本気だからな。三年の思い出、ちゃんと作ろうぜ」",
+    choices:[
+      ["「約束だ」",{social:2},{kenta:{affection:4,trust:3}},"apr10_after"],
+      ["「まずは受験だろ」",{study:3},{kenta:{trust:2}},"apr10_after"],
+      ["「じゃあ週末に遊ぶ？」",{luck:2,money:-300},{kenta:{affection:5}},"apr10_after"],
+      ["「そういうの、苦手なんだ」",{stamina:2},{kenta:{trust:-1}},"apr10_after"]
+    ]
+  },
+  apr10_after:{
+    id:"apr10_after",month:4,phase:"after",speaker:"美咲",who:"misaki",bg:"rooftop",
+    text:"夕方の屋上。美咲がフェンス越しの空を見る。「高校生活って……思ったより短いのかもね」",
+    choices:[
+      ["「まだ始まったばかりだよ」",{social:2},{misaki:{affection:5,trust:2}},"apr11_morning"],
+      ["「後悔しない一年にしたい」",{luck:2},{misaki:{trust:5}},"apr11_morning"],
+      ["「じゃあ、今のうちに遊ばないと」",{social:3,money:-200},{misaki:{affection:4}},"apr11_morning"],
+      ["黙って一緒に景色を見る",{art:2},{misaki:{trust:3}},"apr11_morning"]
+    ]
+  },
+  apr11_morning:{
+    id:"apr11_morning",month:4,phase:"morning",speaker:"美咲",who:"misaki",bg:"classroom",
+    text:"翌朝。美咲が笑う。「昨日、なんだか楽しかった。……また話そうね」",
+    choices:[
+      ["「うん」",{social:1},{misaki:{affection:3}},"may01_morning"],
+      ["「今度はみんなで行こう」",{social:2},{misaki:{trust:2},kenta:{affection:2}},"may01_morning"],
+      ["「文化祭のこと、少し考えてみる」",{art:2},{misaki:{affection:2}},"may01_morning"],
+      ["「じゃあ、また」",{luck:1},{}, "may01_morning"]
+    ]
+  },
+  may01_morning:{
+    id:"may01_morning",month:5,phase:"morning",speaker:"美咲",who:"misaki",bg:"rooftop",
+    text:"五月。少し暑くなった朝。美咲が空を見上げる。「ねえ、ゴールデンウィーク、どこか行かない？」",
+    choices:[
+      ["「二人で行こう」",{social:2,money:-800},{misaki:{affection:7,trust:3}},"may01_after"],
+      ["「健太も誘おう」",{social:3,money:-500},{misaki:{trust:4},kenta:{affection:3}},"may01_after"],
+      ["「家でゆっくりしたい」",{stamina:8},{misaki:{affection:1}},"may01_after"],
+      ["「まず予定を聞かせて」",{luck:2},{misaki:{trust:2}},"may01_after"]
+    ]
+  },
+  may01_after:{
+    id:"may01_after",month:5,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
+    text:"帰り道。健太がぽつりと言った。「お前さ、最近ちょっと変わったよな。……なんか、楽しそうだ」",
+    choices:[
+      ["「そうかな？」",{social:2},{kenta:{trust:3}},"may02_morning"],
+      ["「お前のおかげかも」",{social:3},{kenta:{affection:5}},"may02_morning"],
+      ["「別に普通だよ」",{luck:1},{}, "may02_morning"],
+      ["「お前も楽しめよ」",{social:2},{kenta:{affection:3,trust:2}},"may02_morning"]
+    ]
+  },
+  may02_morning:{
+    id:"may02_morning",month:5,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    text:"「さて、そろそろ三者面談の準備だ。遊ぶだけが青春じゃない。自分の未来も、少しずつ考えておけよ」",
+    choices:[
+      ["進路について考える",{study:4},{teacher:{trust:4}},"may02_after"],
+      ["友達との時間も大切にしたい",{social:2},{teacher:{trust:2}},"may02_after"],
+      ["将来はまだ分からない",{luck:2},{teacher:{affection:2}},"may02_after"],
+      ["まずは今日を楽しむ",{stamina:3},{}, "may02_after"]
+    ]
+  },
+  may02_after:{
+    id:"may02_after",month:5,phase:"after",speaker:"美咲",who:"misaki",bg:"rooftop",
+    text:"夕暮れ。美咲が笑う。「ねえ。こういう毎日が、ずっと続けばいいのにね」",
+    choices:[
+      ["「続けよう。俺たちで」",{social:3},{misaki:{affection:7,trust:4}},"month_end"],
+      ["「……うん」",{luck:2},{misaki:{affection:5}},"month_end"],
+      ["「卒業まで、まだ長いよ」",{study:2},{misaki:{trust:3}},"month_end"],
+      ["「そうだな」",{art:2},{misaki:{affection:3,trust:2}},"month_end"]
+    ]
+  },
+  month_end:{
+    id:"month_end",month:5,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
+    text:"五月の終わり。少しずつ、ただのクラスメイトだった三人の距離が近づいていく。――高校生活は、まだ始まったばかりだ。",
+    choices:[
+      ["次の月へ",{stamina:5},{},"nextmonth"]
+    ]
+  }
+};
 
-function pickEvent(){
- let e=events.find(x=>x.month===state.month&&x.phase===state.phase);
- if(!e)e=events.find(x=>x.month===state.month);
- if(!e)e=events[state.day%events.length];
- return e;
+function currentEvent(){ return events[state.currentId] || events.apr08_morning; }
+
+function applyEffect(effects){
+  for(const [k,v] of Object.entries(effects||{})){
+    if(k.startsWith("flag:")) continue;
+    if(k in state.stats) state.stats[k]=Math.max(0,Math.min(100,state.stats[k]+v));
+    else if(k in state) state[k]=Math.max(0,state[k]+v);
+  }
 }
-let current=pickEvent();
+function applyRelations(relations){
+  for(const [id,vals] of Object.entries(relations||{})){
+    if(id==="flag") continue;
+    if(!state.relations[id]) continue;
+    for(const [k,v] of Object.entries(vals)){
+      if(k==="affection"||k==="trust") state.relations[id][k]=Math.max(0,Math.min(100,state.relations[id][k]+v));
+    }
+  }
+}
+function processExtra(extra){
+  if(!extra) return;
+  for(const [k,v] of Object.entries(extra)){
+    if(k==="flag:metKenta") state.flags.metKenta=!!v;
+  }
+}
 
 function bgSvg(kind){
- if(kind==="corridor")return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
- <defs>
-  <linearGradient id="corridorWall" x2="0" y2="1"><stop stop-color="#eef4f5"/><stop offset="1" stop-color="#c8d3d5"/></linearGradient>
-  <linearGradient id="corridorFloor" x2="0" y2="1"><stop stop-color="#aeb7bb"/><stop offset="1" stop-color="#737d82"/></linearGradient>
- </defs>
- <rect width="1000" height="600" fill="url(#corridorWall)"/>
- <path d="M0 135L500 245L1000 135V410H0Z" fill="#dbe5e6"/>
- <path d="M0 410L500 245L1000 410V600H0Z" fill="url(#corridorFloor)"/>
- <path d="M0 135L500 245L1000 135" stroke="#78868d" stroke-width="10"/>
- <path d="M500 245V600" stroke="#69747a" stroke-width="7" opacity=".55"/>
- <g stroke="#8c989d" stroke-width="7" fill="#f7f4e9">
-   <rect x="54" y="207" width="190" height="190" rx="3"/>
-   <rect x="756" y="207" width="190" height="190" rx="3"/>
- </g>
- <g stroke="#a9b2b5" stroke-width="5">
-   <path d="M149 207V397M54 302H244M851 207V397M756 302H946"/>
- </g>
- <rect y="397" width="1000" height="17" fill="#665f59"/>
- <g opacity=".28" stroke="#fff" stroke-width="4"><path d="M30 450L470 520M970 450L530 520"/></g>
- <text x="500" y="115" text-anchor="middle" font-size="30" font-family="sans-serif" fill="#6f7d82" opacity=".55">2 - B</text>
- </svg>`;
- if(kind==="rooftop")return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
- <defs>
-  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#78a8cf"/><stop offset=".65" stop-color="#d8b6a1"/><stop offset="1" stop-color="#f1d9b6"/></linearGradient>
-  <linearGradient id="roof" x2="0" y2="1"><stop stop-color="#b5aa95"/><stop offset="1" stop-color="#817968"/></linearGradient>
- </defs>
- <rect width="1000" height="600" fill="url(#sky)"/>
- <circle cx="790" cy="105" r="58" fill="#fff4c7" opacity=".85"/>
- <g fill="#fff" opacity=".28"><ellipse cx="180" cy="145" rx="120" ry="30"/><ellipse cx="360" cy="190" rx="150" ry="35"/></g>
- <path d="M0 405Q180 350 335 405T660 395T1000 405V600H0Z" fill="#607d69"/>
- <path d="M0 450L500 400L1000 450V600H0Z" fill="url(#roof)"/>
- <g stroke="#765f4b" stroke-width="17" fill="none">
-  <path d="M60 490V185M940 490V185M60 205H940"/>
-  <path d="M210 475V260M500 450V260M790 475V260"/>
- </g>
- <g stroke="#a08a70" stroke-width="5"><path d="M0 530H1000M0 575H1000"/></g>
- </svg>`;
- return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
- <defs>
-  <linearGradient id="classSky" x2="0" y2="1"><stop stop-color="#a8cde2"/><stop offset="1" stop-color="#edf3f0"/></linearGradient>
-  <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#d5b77e"/><stop offset="1" stop-color="#9b784d"/></linearGradient>
- </defs>
- <rect width="1000" height="600" fill="#e8e0d1"/>
- <rect x="0" y="0" width="1000" height="330" fill="url(#classSky)"/>
- <g stroke="#879eaa" stroke-width="8" fill="#eef8fa">
-   <rect x="58" y="52" width="330" height="265" rx="4"/>
- </g>
- <g stroke="#9eb1ba" stroke-width="7">
-   <path d="M223 52V317M58 184H388"/>
- </g>
- <rect x="690" y="58" width="220" height="180" rx="4" fill="#405363"/>
- <path d="M720 104H860M720 145H835M720 186H875" stroke="#d7e1dc" stroke-width="6" opacity=".7"/>
- <rect y="330" width="1000" height="16" fill="#745a43"/>
- <path d="M0 346H1000V600H0Z" fill="#d6c1a0"/>
- <g>
-  <rect x="402" y="385" width="205" height="25" rx="4" fill="#b38a57"/>
-  <rect x="415" y="410" width="18" height="115" fill="#76583d"/>
-  <rect x="576" y="410" width="18" height="115" fill="#76583d"/>
-  <rect x="658" y="385" width="205" height="25" rx="4" fill="#b38a57"/>
-  <rect x="671" y="410" width="18" height="115" fill="#76583d"/>
-  <rect x="832" y="410" width="18" height="115" fill="#76583d"/>
- </g>
- <g fill="#c8aa73" opacity=".7"><rect x="392" y="371" width="225" height="12" rx="5"/><rect x="648" y="371" width="225" height="12" rx="5"/></g>
- <path d="M0 560H1000" stroke="#a18a6b" stroke-width="5"/>
- </svg>`;
+  if(kind==="corridor") return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+   <linearGradient id="cw" x2="0" y2="1"><stop stop-color="#f5f7f5"/><stop offset=".55" stop-color="#dbe4e2"/><stop offset="1" stop-color="#bdc8c7"/></linearGradient>
+   <linearGradient id="cf" x2="0" y2="1"><stop stop-color="#aeb6b4"/><stop offset="1" stop-color="#687278"/></linearGradient>
+   <linearGradient id="sun" x2="1" y2="0"><stop stop-color="#ffe8a5" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1000" height="600" fill="url(#cw)"/>
+  <path d="M0 135L500 245L1000 135V410H0Z" fill="#edf2ef"/>
+  <path d="M0 410L500 245L1000 410V600H0Z" fill="url(#cf)"/>
+  <path d="M0 135L500 245L1000 135" stroke="#6e7c83" stroke-width="10"/>
+  <path d="M500 245V600" stroke="#69747a" stroke-width="7" opacity=".5"/>
+  <g stroke="#8b999d" stroke-width="7" fill="#f8fbf8">
+   <rect x="50" y="203" width="194" height="194" rx="4"/><rect x="756" y="203" width="194" height="194" rx="4"/>
+  </g>
+  <g stroke="#a9b5b8" stroke-width="5"><path d="M147 203V397M50 300H244M853 203V397M756 300H950"/></g>
+  <path d="M0 397H1000V417H0Z" fill="#665d57"/>
+  <path d="M0 0L620 0L900 600H0Z" fill="url(#sun)"/>
+  <g fill="#78858b" opacity=".35"><rect x="355" y="85" width="85" height="50" rx="6"/><rect x="565" y="85" width="85" height="50" rx="6"/></g>
+  <text x="500" y="118" text-anchor="middle" font-size="27" font-family="sans-serif" fill="#65757b" opacity=".55">3 - A</text>
+  </svg>`;
+
+  if(kind==="rooftop") return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+   <linearGradient id="rs" x2="0" y2="1"><stop stop-color="#6d99bf"/><stop offset=".58" stop-color="#e0a67e"/><stop offset="1" stop-color="#f6d7a6"/></linearGradient>
+   <linearGradient id="rr" x2="0" y2="1"><stop stop-color="#b6aa96"/><stop offset="1" stop-color="#736b60"/></linearGradient>
+   <radialGradient id="glow"><stop stop-color="#fff4c1"/><stop offset="1" stop-color="#fff4c100"/></radialGradient>
+  </defs>
+  <rect width="1000" height="600" fill="url(#rs)"/>
+  <circle cx="790" cy="120" r="150" fill="url(#glow)"/>
+  <circle cx="790" cy="120" r="48" fill="#fff2bf" opacity=".9"/>
+  <g fill="#fff" opacity=".22"><ellipse cx="180" cy="145" rx="120" ry="24"/><ellipse cx="350" cy="188" rx="160" ry="28"/><ellipse cx="610" cy="120" rx="100" ry="20"/></g>
+  <path d="M0 408Q190 350 345 405T660 397T1000 410V600H0Z" fill="#59755f"/>
+  <path d="M0 450L500 397L1000 450V600H0Z" fill="url(#rr)"/>
+  <g stroke="#695848" stroke-width="16" fill="none"><path d="M55 500V178M945 500V178M55 198H945"/><path d="M210 478V250M500 450V250M790 478V250"/></g>
+  <g stroke="#a18c72" stroke-width="5"><path d="M0 530H1000M0 575H1000"/></g>
+  <path d="M0 0L1000 0L1000 260Q700 205 0 350Z" fill="#ffffff" opacity=".05"/>
+  </svg>`;
+
+  return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+   <linearGradient id="cs" x2="0" y2="1"><stop stop-color="#9bc7e0"/><stop offset=".62" stop-color="#e7edf0"/><stop offset="1" stop-color="#f0d8b7"/></linearGradient>
+   <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#d8c4a5"/><stop offset="1" stop-color="#b28d64"/></linearGradient>
+   <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#c9a36c"/><stop offset="1" stop-color="#76563c"/></linearGradient>
+  </defs>
+  <rect width="1000" height="600" fill="#eee6d7"/>
+  <rect width="1000" height="340" fill="url(#cs)"/>
+  <g stroke="#8199a5" stroke-width="8" fill="#f3fbfc">
+   <rect x="50" y="48" width="335" height="272" rx="4"/>
+  </g>
+  <g stroke="#9eb2bb" stroke-width="7"><path d="M217 48V320M50 184H385"/></g>
+  <path d="M50 292L385 82" stroke="#fff" stroke-width="22" opacity=".16"/>
+  <rect x="675" y="55" width="245" height="185" rx="5" fill="#344754"/>
+  <path d="M705 100H885M705 143H850M705 186H875" stroke="#d9e2df" stroke-width="6" opacity=".75"/>
+  <rect y="330" width="1000" height="18" fill="#71563f"/>
+  <rect y="348" width="1000" height="252" fill="url(#floor)"/>
+  <g>
+   <rect x="390" y="382" width="218" height="28" rx="4" fill="url(#wood)"/>
+   <rect x="405" y="409" width="20" height="122" fill="#76553b"/><rect x="573" y="409" width="20" height="122" fill="#76553b"/>
+   <rect x="655" y="382" width="218" height="28" rx="4" fill="url(#wood)"/>
+   <rect x="670" y="409" width="20" height="122" fill="#76553b"/><rect x="838" y="409" width="20" height="122" fill="#76553b"/>
+  </g>
+  <g fill="#e5ca92" opacity=".7"><rect x="382" y="369" width="234" height="12" rx="6"/><rect x="647" y="369" width="234" height="12" rx="6"/></g>
+  <path d="M0 557H1000" stroke="#9e815f" stroke-width="5"/>
+  </svg>`;
 }
 
-function personSvg(type){
- let girl = type==="girl";
- let hair = girl ? "#3a2b2a" : "#28313b";
- let hair2 = girl ? "#5a3e39" : "#3c4854";
- let jacket = girl ? "#596d86" : "#425b73";
- let shirt = girl ? "#f3eee5" : "#f3eee5";
- return `<svg viewBox="0 0 360 540" aria-hidden="true">
-  <defs>
-   <linearGradient id="skin" x2="0" y2="1"><stop stop-color="#f7d5bb"/><stop offset="1" stop-color="#eab899"/></linearGradient>
-   <linearGradient id="jacket" x2="0" y2="1"><stop stop-color="${jacket}"/><stop offset="1" stop-color="#33485e"/></linearGradient>
-  </defs>
-  <ellipse cx="180" cy="512" rx="112" ry="18" fill="#000" opacity=".18"/>
-  <!-- torso / uniform -->
-  <path d="M84 284Q95 238 143 224H217Q265 238 276 284L292 480H68Z" fill="url(#jacket)"/>
-  <path d="M132 242L180 302L228 242L215 415H145Z" fill="${shirt}"/>
-  <path d="M180 302L164 333H196Z" fill="#b07b55"/>
-  <path d="M153 321L180 302L207 321L198 392H162Z" fill="#8f4654" opacity="${girl?0.85:0}"/>
-  <path d="M111 282L82 385M249 282L278 385" stroke="url(#skin)" stroke-width="27" stroke-linecap="round"/>
-  <!-- neck and face -->
-  <path d="M153 215V250Q180 270 207 250V215Z" fill="url(#skin)"/>
-  <path d="M116 145Q180 91 244 145L231 227Q180 270 129 227Z" fill="url(#skin)"/>
-  <!-- ears -->
-  <circle cx="119" cy="192" r="14" fill="#efc1a5"/><circle cx="241" cy="192" r="14" fill="#efc1a5"/>
-  <!-- hair -->
-  <path d="M108 177Q101 101 180 82Q259 101 252 177L231 160Q214 128 180 125Q145 128 129 160Z" fill="${hair}"/>
-  <path d="M108 161Q93 213 122 247Q139 217 137 170Z" fill="${hair2}"/>
-  <path d="M252 161Q267 213 238 247Q221 217 223 170Z" fill="${hair2}"/>
-  ${girl?`<path d="M111 142Q82 151 75 192Q105 184 126 162Z" fill="${hair}"/><path d="M249 142Q278 151 285 192Q255 184 234 162Z" fill="${hair}"/>`:``}
-  <!-- eyes -->
-  <ellipse cx="155" cy="190" rx="9" ry="12" fill="#26303a"/>
-  <ellipse cx="205" cy="190" rx="9" ry="12" fill="#26303a"/>
-  <circle cx="152" cy="186" r="3" fill="#fff"/><circle cx="202" cy="186" r="3" fill="#fff"/>
-  <path d="M143 170Q155 163 166 169M194 169Q205 163 217 170" stroke="#433b38" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <path d="M160 220Q180 232 200 220" stroke="#a5575c" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <!-- hands / legs -->
-  <path d="M78 384L52 432M282 384L308 432" stroke="url(#skin)" stroke-width="24" stroke-linecap="round"/>
-  <path d="M146 470L121 514M214 470L239 514" stroke="#d6a884" stroke-width="25" stroke-linecap="round"/>
-  <path d="M82 515H143M217 515H278" stroke="#263747" stroke-width="24" stroke-linecap="round"/>
-  <!-- subtle highlight -->
-  <path d="M137 270Q180 292 223 270" stroke="#ffffff" stroke-width="3" opacity=".22" fill="none"/>
- </svg>`;
+function personSvg(type, mood="normal"){
+  if(type==="narration") return "";
+  const girl=type==="girl";
+  const skin=girl?"#f1c5ab":"#edbea0";
+  const hair=girl?"#33282c":"#27313a";
+  const hair2=girl?"#503a40":"#394650";
+  const jacket=girl?"#6b7f99":"#4c6378";
+  const accent=girl?"#b65c70":"#40576d";
+  const eye=girl?"#28323b":"#26313a";
+  const mouth=mood==="happy"?"M155 222Q180 240 205 222":mood==="serious"?"M158 225Q180 218 202 225":"M160 224Q180 232 200 224";
+  return `<svg viewBox="0 0 420 600" aria-hidden="true">
+   <defs>
+    <linearGradient id="pSkin${girl?'g':'b'}" x2="0" y2="1"><stop stop-color="#f9d9c3"/><stop offset="1" stop-color="${skin}"/></linearGradient>
+    <linearGradient id="pJacket${girl?'g':'b'}" x2="0" y2="1"><stop stop-color="${jacket}"/><stop offset="1" stop-color="#263c52"/></linearGradient>
+   </defs>
+   <ellipse cx="210" cy="578" rx="125" ry="19" fill="#000" opacity=".18"/>
+   <path d="M90 336Q103 268 165 244H255Q317 268 330 336L350 555H70Z" fill="url(#pJacket${girl?'g':'b'})"/>
+   <path d="M154 258L210 322L266 258L251 465H169Z" fill="#f6f0e6"/>
+   ${girl?`<path d="M210 322L186 355H234Z" fill="#b37b55"/><path d="M173 346L210 322L247 346L238 418H182Z" fill="${accent}" opacity=".9"/>`:
+   `<path d="M210 322L190 352H230Z" fill="#b37b55"/><path d="M182 347L210 322L238 347L230 414H190Z" fill="${accent}" opacity=".95"/>`}
+   <path d="M159 233V280Q210 310 261 280V233Z" fill="url(#pSkin${girl?'g':'b'})"/>
+   <path d="M134 142Q210 78 286 142L270 237Q210 292 150 237Z" fill="url(#pSkin${girl?'g':'b'})"/>
+   <circle cx="137" cy="198" r="15" fill="${skin}"/><circle cx="283" cy="198" r="15" fill="${skin}"/>
+   <path d="M125 174Q112 93 210 75Q308 93 295 174L269 151Q250 119 210 119Q170 119 151 151Z" fill="${hair}"/>
+   <path d="M125 160Q103 220 145 270Q160 229 153 164Z" fill="${hair2}"/>
+   <path d="M295 160Q317 220 275 270Q260 229 267 164Z" fill="${hair2}"/>
+   ${girl?`<path d="M127 145Q91 159 81 210Q112 195 151 166Z" fill="${hair}"/><path d="M293 145Q329 159 339 210Q308 195 269 166Z" fill="${hair}"/>`:``}
+   <ellipse cx="178" cy="198" rx="10" ry="13" fill="${eye}"/><ellipse cx="242" cy="198" rx="10" ry="13" fill="${eye}"/>
+   <circle cx="175" cy="194" r="3.5" fill="#fff"/><circle cx="239" cy="194" r="3.5" fill="#fff"/>
+   <path d="M164 176Q178 167 191 176M229 176Q242 167 256 176" stroke="#453c3b" stroke-width="4" fill="none" stroke-linecap="round"/>
+   <path d="${mouth}" stroke="#a2575c" stroke-width="4" fill="none" stroke-linecap="round"/>
+   <path d="M94 350L58 460M326 350L362 460" stroke="url(#pSkin${girl?'g':'b'})" stroke-width="30" stroke-linecap="round"/>
+   <path d="M151 530L125 575M269 530L295 575" stroke="#d0a07e" stroke-width="28" stroke-linecap="round"/>
+   <path d="M89 575H157M263 575H331" stroke="#263746" stroke-width="26" stroke-linecap="round"/>
+   <path d="M134 284Q210 320 286 284" stroke="#fff" stroke-width="4" opacity=".15" fill="none"/>
+  </svg>`;
+}
+
+function speakerRole(e){
+  if(e.who==="misaki"||e.who==="kenta") return "クラスメイト";
+  if(e.who==="teacher") return "担任教師";
+  return "ナレーション";
 }
 
 function render(){
- document.getElementById("date").textContent=`4月${state.day}日`;
- document.getElementById("condition").innerHTML=`体力 <b>${state.stamina}</b>　・　所持金 <b>¥${state.money.toLocaleString()}</b>　・　${state.phase==="morning"?"朝":"放課後"}`;
- document.getElementById("bg").innerHTML=bgSvg(current.bg);
- document.getElementById("char").innerHTML=personSvg(current.who==="misaki"?"girl":"boy");
- document.getElementById("name").textContent=current.speaker;
- document.querySelector(".role").textContent=current.who==="misaki"?"クラスメイト":"登場人物";
- document.getElementById("text").textContent=current.text;
- document.getElementById("choices").innerHTML=current.choices.map((c,i)=>`<button class="choice" onclick="choose(${i})">${i+1}. ${c[0]}</button>`).join("");
- document.getElementById("log").innerHTML=state.log.slice(-10).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
+  const e=currentEvent();
+  document.getElementById("date").textContent=`${state.month}月${state.day}日`;
+  document.getElementById("condition").innerHTML=`<b>体力 ${state.stamina}</b><span>　・　</span><b>¥${state.money.toLocaleString()}</b><span>　・　${state.phase==="morning"?"朝":"放課後"}</span>`;
+  document.getElementById("bg").innerHTML=bgSvg(e.bg);
+  document.getElementById("char").innerHTML=personSvg(e.who==="misaki"?"girl":e.who==="kenta"?"boy":e.who);
+  document.getElementById("char").className=`char ${e.who==="narration"?"narration":""}`;
+  document.getElementById("name").textContent=e.speaker;
+  document.querySelector(".role").textContent=speakerRole(e);
+  document.getElementById("text").textContent=e.text;
+  document.getElementById("choices").innerHTML=e.choices.map((c,i)=>`<button class="choice" onclick="choose(${i})"><span class="num">${i+1}</span><span>${c[0]}</span></button>`).join("");
+  document.getElementById("log").innerHTML=state.log.slice(-12).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
+  document.getElementById("nextBtn").textContent=(e.id==="month_end"?"次の月へ":"翌日へ");
 }
 
 function choose(i){
- const c=current.choices[i];
- for(const [k,v] of Object.entries(c[1])){if(k in state.stats)state.stats[k]=Math.max(0,state.stats[k]+v);else state[k]=Math.max(0,state[k]+v);}
- for(const [id,vals] of Object.entries(c[2]||{}))for(const [k,v] of Object.entries(vals))state.relations[id][k]=Math.max(0,state.relations[id][k]+v);
- state.log.push(`${state.month}月${state.day}日：「${c[0]}」を選択`);
- state.phase="after"; current=pickEvent(); render();
+  const e=currentEvent();
+  const c=e.choices[i];
+  if(!c) return;
+  applyEffect(c[1]);
+  applyRelations(c[2]);
+  if(c[2]) processExtra(c[2]);
+  state.log.push(`${state.month}月${state.day}日　${e.speaker}：「${c[0]}」`);
+  const next=c[3];
+
+  if(next==="nextmonth"){
+    state.month++;
+    state.day=1;
+    state.phase="morning";
+    state.stamina=Math.min(100,state.stamina+12);
+    state.currentId="may01_morning";
+  } else if(next){
+    // Date changes only when the narrative node explicitly enters a new day.
+    if(next.endsWith("_morning") && !next.startsWith("apr08") && !next.startsWith("apr09") && !next.startsWith("apr10") && !next.startsWith("apr11") && !next.startsWith("may01") && !next.startsWith("may02")){
+      // kept for future nodes
+    }
+    const ne=events[next];
+    if(ne && ne.month!==state.month){
+      state.month=ne.month;
+      state.day=ne.id.startsWith("may")?1:state.day;
+      state.phase=ne.phase;
+    } else if(ne){
+      // Explicit day progression for each morning node.
+      if(ne.phase==="morning" && e.phase==="after"){
+        state.day += 1;
+      }
+      state.phase=ne.phase;
+    }
+    state.currentId=next;
+    state.stamina=Math.max(0,Math.min(100,state.stamina));
+  } else {
+    nextDay();
+    return;
+  }
+  render();
 }
 
 function nextDay(){
- state.day++;
- if(state.day>30){state.day=1;state.month++}
- if(state.month>12){ending();return}
- state.phase="morning";state.stamina=Math.min(100,state.stamina+12);current=pickEvent();render();
+  const e=currentEvent();
+  // Do not let the generic button break the narrative. It advances to the next
+  // morning node only when the current node has no choice transition.
+  let nextId=null;
+  if(e.id==="month_end") nextId="may01_morning";
+  else if(e.id==="apr08_after") nextId="apr09_morning";
+  else if(e.id==="apr09_after") nextId="apr10_morning";
+  else if(e.id==="apr10_after") nextId="apr11_morning";
+  else if(e.id==="apr11_morning") nextId="may01_morning";
+  else if(e.id==="may01_after") nextId="may02_morning";
+  else if(e.id==="may02_after") nextId="month_end";
+  if(nextId){
+    const ne=events[nextId];
+    if(ne.month!==state.month){state.month=ne.month;state.day=1;}
+    else if(ne.phase==="morning" && e.phase==="after") state.day++;
+    state.phase=ne.phase;
+    state.stamina=Math.min(100,state.stamina+12);
+    state.currentId=nextId;
+    render();
+  }
 }
 
 function showModal(html){document.getElementById("modal").innerHTML=html;document.getElementById("overlay").style.display="flex"}
 function closeModal(){document.getElementById("overlay").style.display="none"}
-
-function saveMenu(){showModal(`<h2>セーブ</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="saveGame(${n})">スロット ${n}<br><small>4月${state.day}日 / 美咲♡${state.relations.misaki.affection}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`)}
-function loadMenu(){showModal(`<h2>ロード</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="loadGame(${n})">スロット ${n}<br><small>${localStorage.getItem(GAME_KEY+n)?"データあり":"空"}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`)}
-function saveGame(n){localStorage.setItem(GAME_KEY+n,JSON.stringify(state));closeModal();state.log.push(`スロット${n}に保存しました。`);render()}
-function loadGame(n){const raw=localStorage.getItem(GAME_KEY+n);if(!raw){alert("セーブデータがありません。");return}try{state=JSON.parse(raw);current=pickEvent();closeModal();render()}catch(e){alert("セーブデータを読み込めませんでした。")}}
-function statusMenu(){showModal(`<h2>ステータス</h2><p>${Object.entries(state.stats).map(([k,v])=>`${names[k]}：${v}`).join("　/ ")}</p>${Object.values(state.relations).map(x=>`<p><b>${x.name}</b>　好感度 ${x.affection}　信頼 ${x.trust}<br><small>${x.desc}</small></p>`).join("")}<button onclick="closeModal()">閉じる</button>`)}
-function ending(){showModal(`<h2>卒業式</h2><p>一年間の青春が、静かに幕を閉じた。</p><p>美咲の好感度：${state.relations.misaki.affection}</p><p>総合能力：${Object.values(state.stats).reduce((a,b)=>a+b,0)}</p><button onclick="location.reload()">最初から</button>`)}
+function saveMenu(){
+  showModal(`<h2>セーブ</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="saveGame(${n})">スロット ${n}<br><small>${state.month}月${state.day}日 / ${events[state.currentId].speaker}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`);
+}
+function loadMenu(){
+  showModal(`<h2>ロード</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="loadGame(${n})">スロット ${n}<br><small>${localStorage.getItem(GAME_KEY+n)?"データあり":"空"}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`);
+}
+function saveGame(n){
+  localStorage.setItem(GAME_KEY+n,JSON.stringify(state));
+  closeModal();state.log.push(`スロット${n}に保存しました。`);render();
+}
+function loadGame(n){
+  const raw=localStorage.getItem(GAME_KEY+n);
+  if(!raw){alert("セーブデータがありません。");return}
+  try{
+    const loaded=JSON.parse(raw);
+    state=loaded;
+    if(!state.currentId) state.currentId="apr08_morning";
+    closeModal();render();
+  }catch(e){alert("セーブデータを読み込めませんでした。")}
+}
+function ending(){
+  showModal(`<h2>卒業式</h2><p>一年間の青春が、静かに幕を閉じた。</p><p>美咲の好感度：${state.relations.misaki.affection}</p><p>総合能力：${Object.values(state.stats).reduce((a,b)=>a+b,0)}</p><button onclick="location.reload()">最初から</button>`);
+}
 render();
 </script>
 </body>
