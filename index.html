@@ -33,14 +33,14 @@ main{padding:14px}
  isolation:isolate;
 }
 .bg{position:absolute;inset:0;z-index:0}
-.bg svg{width:100%;height:100%;display:block}
+.bg svg{width:100%;height:100%;display:block;filter:saturate(.82) contrast(1.08)}
 .scene:after{
  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
  background:linear-gradient(180deg,#07111a12 25%,#07111a30 52%,#07111a9a 100%);
 }
 .char{
  position:absolute;z-index:2;right:8%;bottom:132px;width:min(420px,45vw);
- filter:drop-shadow(0 18px 14px #0007);
+ filter:drop-shadow(0 18px 14px #0007) saturate(.88) contrast(1.06);
  transform-origin:center bottom;
  animation:enter .55s ease-out;
 }
@@ -73,6 +73,12 @@ main{padding:14px}
  transition:transform .12s ease,background .12s ease;
 }
 .choice:hover{background:#fff;transform:translateY(-1px)}
+.result-panel{display:none;color:#f6f7f7}
+.result-panel.show{display:block}
+.result-label{color:#d5b176;font-size:9px;font-weight:900;letter-spacing:.18em;margin:6px 0}
+.result-text{font-size:15px;line-height:1.72;min-height:54px;text-shadow:0 1px 2px #000}
+.continue{margin-top:8px;width:100%;padding:11px;border-radius:10px;border:1px solid #c08b4e;background:#a9743f;color:#fff;font-weight:900;font-family:inherit}
+.notice{margin:7px 0 0;padding:8px 10px;border-radius:8px;background:#ffffff12;border:1px solid #ffffff18;color:#f4dfb7;font-size:12px;font-weight:800}
 .num{
  width:22px;height:22px;display:grid;place-items:center;flex:none;border-radius:50%;
  background:#26394d;color:#fff;font-size:11px;font-weight:900
@@ -126,6 +132,12 @@ main{padding:14px}
  <div class="text" id="text"></div>
  <div class="choice-label">YOUR CHOICE</div>
  <div class="choices" id="choices"></div>
+ <div class="result-panel" id="resultPanel">
+   <div class="result-label">AFTER YOUR CHOICE</div>
+   <div class="result-text" id="resultText"></div>
+   <div id="purchaseNotice"></div>
+   <button class="continue" onclick="continueStory()">次へ</button>
+ </div>
 </div>
 </div>
 <div class="controls">
@@ -148,9 +160,9 @@ main{padding:14px}
 
 const GAME_KEY="seishun_save_";
 const charData={
-  misaki:{name:"美咲",affection:38,trust:24,desc:"明るく面倒見のいいクラスメイト。",type:"girl"},
-  kenta:{name:"健太",affection:31,trust:34,desc:"軽口が多いが頼れる友人。",type:"boy"},
-  teacher:{name:"佐藤先生",affection:22,trust:28,desc:"生徒をよく見ている担任。",type:"teacher"}
+  saki:{name:"紗季",affection:38,trust:24,desc:"明るく観察力のあるクラスメイト。",type:"girl",role:"放送部部長"},
+  kenta:{name:"健太",affection:31,trust:34,desc:"軽口が多いが頼れる友人。",type:"boy",role:"サッカー部部長"},
+  teacher:{name:"佐藤先生",affection:22,trust:28,desc:"生徒をよく見ている担任。",type:"teacher",role:"3年A組担任"}
 };
 
 function freshState(){
@@ -167,20 +179,20 @@ let state=freshState();
 
 const events={
   apr08_morning:{
-    id:"apr08_morning",month:4,phase:"morning",speaker:"美咲",who:"misaki",bg:"classroom",
-    text:"「おはよう。……今日、なんか眠そうじゃない？」",
+    id:"apr08_morning",month:4,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
+    text:"4月8日、始業前。三年生になってまだ数日。教室には新しい席順と、少しだけ浮ついた空気が残っていた。\n\n席についた主人公へ、放送部部長の紗季が振り返る。\n「おはよう。……今日、なんか眠そうじゃない？」",
     choices:[
-      ["笑ってごまかす",{social:2,stamina:-4},{misaki:{affection:3}},"apr08_after"],
-      ["正直に眠いと言う",{social:1,stamina:1},{misaki:{trust:3}},"apr08_after"],
-      ["「昨日、遅くまで勉強してて」",{study:3,stamina:-7},{misaki:{affection:1}},"apr08_after"],
+      ["笑ってごまかす",{social:2,stamina:-4},{saki:{affection:3}},"apr08_after"],
+      ["正直に眠いと言う",{social:1,stamina:1},{saki:{trust:3}},"apr08_after"],
+      ["「昨日、遅くまで勉強してて」",{study:3,stamina:-7},{saki:{affection:1}},"apr08_after"],
       ["軽く会釈して席につく",{stamina:2},{}, "apr08_after"]
     ]
   },
   apr08_after:{
     id:"apr08_after",month:4,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
-    text:"放課後。廊下で、同じクラスの健太が声をかけてきた。「なあ、まだ新学期だしさ。駅前、ちょっと見て回らない？」",
+    text:"4月8日の放課後。チャイムが鳴り、教室から生徒たちが一斉に廊下へ流れ出す。主人公が昇降口へ向かっていると、サッカー部部長の健太が追いついてきた。\n\n「なあ、まだ新学期だしさ。駅前、ちょっと見て回らない？」",
     choices:[
-      ["「いいな。行こう」",{social:3,money:-500},{kenta:{trust:4},"flag:metKenta":true},"apr09_morning"],
+      ["「いいな。行こう」",{social:3,money:-500},{kenta:{trust:4},"flag:metKenta":true},"apr09_morning","駅前でジュースと軽食を購入した"],
       ["「今日は図書室に行くよ」",{study:4,stamina:-5},{kenta:{affection:2}},"apr09_morning"],
       ["「部活を見てから考える」",{sports:3,stamina:-8},{kenta:{trust:2}},"apr09_morning"],
       ["「今日は帰る。また今度」",{stamina:8},{kenta:{trust:1}},"apr09_morning"]
@@ -188,7 +200,7 @@ const events={
   },
   apr09_morning:{
     id:"apr09_morning",month:4,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    text:"翌朝。ホームルームで佐藤先生が言った。「三年生の一年は短い。進路も大事だが、それだけで終わらせるなよ」",
+    text:"4月9日の朝。ホームルームが始まり、教室が静かになる。佐藤先生は出席簿を閉じると、三年生全員を見渡した。\n\n「三年生の一年は短い。進路も大事だが、それだけで終わらせるなよ」",
     choices:[
       ["真剣に話を聞く",{study:2,social:1},{teacher:{trust:3}},"apr09_after"],
       ["進路について質問する",{study:4},{teacher:{trust:5}},"apr09_after"],
@@ -197,58 +209,58 @@ const events={
     ]
   },
   apr09_after:{
-    id:"apr09_after",month:4,phase:"after",speaker:"美咲",who:"misaki",bg:"classroom",
-    text:"放課後、美咲が机の横に立った。「ねえ。せっかく三年生なんだし……今年、何か一緒にやってみない？」",
+    id:"apr09_after",month:4,phase:"after",speaker:"紗季",who:"saki",bg:"classroom",
+    text:"4月9日の放課後。教室に残った生徒も少なくなり、窓から西日が差し込んでいる。主人公が荷物をまとめていると、紗季が机の横に立った。\n\n「ねえ。せっかく三年生なんだし……今年、何か一緒にやってみない？」",
     choices:[
-      ["「もちろん。何がしたい？」",{social:2},{misaki:{affection:5,trust:2}},"apr10_morning"],
-      ["「勉強会とか？」",{study:3},{misaki:{trust:4}},"apr10_morning"],
-      ["「文化祭、面白そう」",{art:3},{misaki:{affection:3}},"apr10_morning"],
-      ["「まだ考え中かな」",{luck:1},{misaki:{affection:1}},"apr10_morning"]
+      ["「もちろん。何がしたい？」",{social:2},{saki:{affection:5,trust:2}},"apr10_morning"],
+      ["「勉強会とか？」",{study:3},{saki:{trust:4}},"apr10_morning"],
+      ["「文化祭、面白そう」",{art:3},{saki:{affection:3}},"apr10_morning"],
+      ["「まだ考え中かな」",{luck:1},{saki:{affection:1}},"apr10_morning"]
     ]
   },
   apr10_morning:{
     id:"apr10_morning",month:4,phase:"morning",speaker:"健太",who:"kenta",bg:"corridor",
-    text:"朝。健太が笑いながら肩を叩く。「昨日の話さ、俺、本気だからな。三年の思い出、ちゃんと作ろうぜ」",
+    text:"4月10日の朝。昇降口から教室へ向かう途中、後ろから足音が近づいてくる。健太が笑いながら肩を叩いた。\n\n「昨日の話さ、俺、本気だからな。三年の思い出、ちゃんと作ろうぜ」",
     choices:[
       ["「約束だ」",{social:2},{kenta:{affection:4,trust:3}},"apr10_after"],
       ["「まずは受験だろ」",{study:3},{kenta:{trust:2}},"apr10_after"],
-      ["「じゃあ週末に遊ぶ？」",{luck:2,money:-300},{kenta:{affection:5}},"apr10_after"],
+      ["「じゃあ週末に遊ぶ？」",{luck:2,money:-300},{kenta:{affection:5}},"apr10_after","週末の遊びに必要なチケットを購入した"],
       ["「そういうの、苦手なんだ」",{stamina:2},{kenta:{trust:-1}},"apr10_after"]
     ]
   },
   apr10_after:{
-    id:"apr10_after",month:4,phase:"after",speaker:"美咲",who:"misaki",bg:"rooftop",
-    text:"夕方の屋上。美咲がフェンス越しの空を見る。「高校生活って……思ったより短いのかもね」",
+    id:"apr10_after",month:4,phase:"after",speaker:"紗季",who:"saki",bg:"rooftop",
+    text:"4月10日の夕方。人の少ない屋上に出ると、春の風がフェンスを抜けていく。紗季はしばらく黙って空を眺めていた。\n\n「高校生活って……思ったより短いのかもね」",
     choices:[
-      ["「まだ始まったばかりだよ」",{social:2},{misaki:{affection:5,trust:2}},"apr11_morning"],
-      ["「後悔しない一年にしたい」",{luck:2},{misaki:{trust:5}},"apr11_morning"],
-      ["「じゃあ、今のうちに遊ばないと」",{social:3,money:-200},{misaki:{affection:4}},"apr11_morning"],
-      ["黙って一緒に景色を見る",{art:2},{misaki:{trust:3}},"apr11_morning"]
+      ["「まだ始まったばかりだよ」",{social:2},{saki:{affection:5,trust:2}},"apr11_morning"],
+      ["「後悔しない一年にしたい」",{luck:2},{saki:{trust:5}},"apr11_morning"],
+      ["「じゃあ、今のうちに遊ばないと」",{social:3,money:-200},{saki:{affection:4}},"apr11_morning","自動販売機でジュースを購入した"],
+      ["黙って一緒に景色を見る",{art:2},{saki:{trust:3}},"apr11_morning"]
     ]
   },
   apr11_morning:{
-    id:"apr11_morning",month:4,phase:"morning",speaker:"美咲",who:"misaki",bg:"classroom",
-    text:"翌朝。美咲が笑う。「昨日、なんだか楽しかった。……また話そうね」",
+    id:"apr11_morning",month:4,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
+    text:"4月11日の朝。昨日の屋上での時間が、まだ頭の片隅に残っている。席につくと、紗季がこちらを見て小さく笑った。\n\n「昨日、なんだか楽しかった。……また話そうね」",
     choices:[
-      ["「うん」",{social:1},{misaki:{affection:3}},"may01_morning"],
-      ["「今度はみんなで行こう」",{social:2},{misaki:{trust:2},kenta:{affection:2}},"may01_morning"],
-      ["「文化祭のこと、少し考えてみる」",{art:2},{misaki:{affection:2}},"may01_morning"],
+      ["「うん」",{social:1},{saki:{affection:3}},"may01_morning"],
+      ["「今度はみんなで行こう」",{social:2},{saki:{trust:2},kenta:{affection:2}},"may01_morning"],
+      ["「文化祭のこと、少し考えてみる」",{art:2},{saki:{affection:2}},"may01_morning"],
       ["「じゃあ、また」",{luck:1},{}, "may01_morning"]
     ]
   },
   may01_morning:{
-    id:"may01_morning",month:5,phase:"morning",speaker:"美咲",who:"misaki",bg:"rooftop",
-    text:"五月。少し暑くなった朝。美咲が空を見上げる。「ねえ、ゴールデンウィーク、どこか行かない？」",
+    id:"may01_morning",month:5,phase:"morning",speaker:"紗季",who:"saki",bg:"rooftop",
+    text:"5月1日。少し暑くなった朝。連休を前に、教室にもいつもより明るい空気が漂っている。紗季が窓の外を見ながら振り返った。\n\n「ねえ、ゴールデンウィーク、どこか行かない？」",
     choices:[
-      ["「二人で行こう」",{social:2,money:-800},{misaki:{affection:7,trust:3}},"may01_after"],
-      ["「健太も誘おう」",{social:3,money:-500},{misaki:{trust:4},kenta:{affection:3}},"may01_after"],
-      ["「家でゆっくりしたい」",{stamina:8},{misaki:{affection:1}},"may01_after"],
-      ["「まず予定を聞かせて」",{luck:2},{misaki:{trust:2}},"may01_after"]
+      ["「二人で行こう」",{social:2,money:-800},{saki:{affection:7,trust:3}},"may01_after","二人分の入場券を購入した"],
+      ["「健太も誘おう」",{social:3,money:-500},{saki:{trust:4},kenta:{affection:3}},"may01_after","三人分の軽食と飲み物を購入した"],
+      ["「家でゆっくりしたい」",{stamina:8},{saki:{affection:1}},"may01_after"],
+      ["「まず予定を聞かせて」",{luck:2},{saki:{trust:2}},"may01_after"]
     ]
   },
   may01_after:{
     id:"may01_after",month:5,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
-    text:"帰り道。健太がぽつりと言った。「お前さ、最近ちょっと変わったよな。……なんか、楽しそうだ」",
+    text:"5月1日の帰り道。駅へ向かう歩道を並んで歩く。しばらくして、健太が少し真面目な顔で口を開いた。\n\n「お前さ、最近ちょっと変わったよな。……なんか、楽しそうだ」",
     choices:[
       ["「そうかな？」",{social:2},{kenta:{trust:3}},"may02_morning"],
       ["「お前のおかげかも」",{social:3},{kenta:{affection:5}},"may02_morning"],
@@ -258,7 +270,7 @@ const events={
   },
   may02_morning:{
     id:"may02_morning",month:5,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    text:"「さて、そろそろ三者面談の準備だ。遊ぶだけが青春じゃない。自分の未来も、少しずつ考えておけよ」",
+    text:"5月2日の朝。ホームルームの終わり際、佐藤先生が主人公の机のそばで足を止めた。\n\n「さて、そろそろ三者面談の準備だ。遊ぶだけが青春じゃない。自分の未来も、少しずつ考えておけよ」",
     choices:[
       ["進路について考える",{study:4},{teacher:{trust:4}},"may02_after"],
       ["友達との時間も大切にしたい",{social:2},{teacher:{trust:2}},"may02_after"],
@@ -267,13 +279,13 @@ const events={
     ]
   },
   may02_after:{
-    id:"may02_after",month:5,phase:"after",speaker:"美咲",who:"misaki",bg:"rooftop",
-    text:"夕暮れ。美咲が笑う。「ねえ。こういう毎日が、ずっと続けばいいのにね」",
+    id:"may02_after",month:5,phase:"after",speaker:"紗季",who:"saki",bg:"rooftop",
+    text:"5月2日の夕暮れ。校舎の屋上に上がると、街の明かりが少しずつ灯り始めていた。紗季は手すりにもたれて笑う。\n\n「ねえ。こういう毎日が、ずっと続けばいいのにね」",
     choices:[
-      ["「続けよう。俺たちで」",{social:3},{misaki:{affection:7,trust:4}},"month_end"],
-      ["「……うん」",{luck:2},{misaki:{affection:5}},"month_end"],
-      ["「卒業まで、まだ長いよ」",{study:2},{misaki:{trust:3}},"month_end"],
-      ["「そうだな」",{art:2},{misaki:{affection:3,trust:2}},"month_end"]
+      ["「続けよう。俺たちで」",{social:3},{saki:{affection:7,trust:4}},"month_end"],
+      ["「……うん」",{luck:2},{saki:{affection:5}},"month_end"],
+      ["「卒業まで、まだ長いよ」",{study:2},{saki:{trust:3}},"month_end"],
+      ["「そうだな」",{art:2},{saki:{affection:3,trust:2}},"month_end"]
     ]
   },
   month_end:{
@@ -416,8 +428,9 @@ function personSvg(type, mood="normal"){
 }
 
 function speakerRole(e){
-  if(e.who==="misaki"||e.who==="kenta") return "クラスメイト";
-  if(e.who==="teacher") return "担任教師";
+  if(e.who==="saki") return "放送部部長";
+  if(e.who==="kenta") return "サッカー部部長";
+  if(e.who==="teacher") return "3年A組担任";
   return "ナレーション";
 }
 
@@ -426,60 +439,78 @@ function render(){
   document.getElementById("date").textContent=`${state.month}月${state.day}日`;
   document.getElementById("condition").innerHTML=`<b>体力 ${state.stamina}</b><span>　・　</span><b>¥${state.money.toLocaleString()}</b><span>　・　${state.phase==="morning"?"朝":"放課後"}</span>`;
   document.getElementById("bg").innerHTML=bgSvg(e.bg);
-  document.getElementById("char").innerHTML=personSvg(e.who==="misaki"?"girl":e.who==="kenta"?"boy":e.who);
+  document.getElementById("char").innerHTML=personSvg(e.who==="saki"?"girl":e.who==="kenta"?"boy":e.who);
   document.getElementById("char").className=`char ${e.who==="narration"?"narration":""}`;
   document.getElementById("name").textContent=e.speaker;
   document.querySelector(".role").textContent=speakerRole(e);
   document.getElementById("text").textContent=e.text;
   document.getElementById("choices").innerHTML=e.choices.map((c,i)=>`<button class="choice" onclick="choose(${i})"><span class="num">${i+1}</span><span>${c[0]}</span></button>`).join("");
+  document.getElementById("choices").style.display="";
+  document.getElementById("resultPanel").classList.remove("show");
+  document.getElementById("resultText").textContent="";
+  document.getElementById("purchaseNotice").innerHTML="";
   document.getElementById("log").innerHTML=state.log.slice(-12).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
   document.getElementById("nextBtn").textContent=(e.id==="month_end"?"次の月へ":"翌日へ");
 }
 
+let pendingNext=null;
 function choose(i){
-  const e=currentEvent();
-  const c=e.choices[i];
+  const e=currentEvent(), c=e.choices[i];
   if(!c) return;
-  applyEffect(c[1]);
-  applyRelations(c[2]);
-  if(c[2]) processExtra(c[2]);
+  const cost=Math.max(0,Number(-(c[1]?.money||0)));
+  if(cost>state.money){ alert("所持金が足りません。"); return; }
+  applyEffect(c[1]); applyRelations(c[2]); if(c[2]) processExtra(c[2]);
   state.log.push(`${state.month}月${state.day}日　${e.speaker}：「${c[0]}」`);
-  const next=c[3];
+  pendingNext=c[3];
 
+  let result;
+  if(e.who==="saki") result="紗季は少し驚いたあと、ふっと笑った。「うん。それなら、もっと面白くなりそう」";
+  else if(e.who==="kenta") result="健太は満足そうに笑った。「よし、決まりだな。じゃあ次は――」";
+  else if(e.who==="teacher") result="佐藤先生は小さくうなずいた。「その調子だ。自分で考えて選べばいい」";
+  else result="その選択を胸に、主人公は次の時間へ進んだ。";
+  if(e.id==="month_end") result="五月の終わり。少しずつ、ただのクラスメイトだった三人の距離が近づいていく。高校生活は、まだ始まったばかりだ。";
+
+  document.getElementById("choices").style.display="none";
+  document.getElementById("resultText").textContent=result;
+  if(cost>0){
+    const item=c[4]||"商品";
+    document.getElementById("purchaseNotice").innerHTML=`<div class="notice">${item}。¥${cost.toLocaleString()}使った。</div>`;
+    state.log.push(`${item}。¥${cost.toLocaleString()}使った。`);
+  }
+  document.getElementById("resultPanel").classList.add("show");
+  renderHUDOnly();
+}
+function renderHUDOnly(){
+  document.getElementById("condition").innerHTML=`<b>体力 ${state.stamina}</b><span>　・　</span><b>¥${state.money.toLocaleString()}</b><span>　・　${state.phase==="morning"?"朝":"放課後"}</span>`;
+  document.getElementById("log").innerHTML=state.log.slice(-12).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
+}
+function continueStory(){
+  if(!pendingNext) return;
+  const next=pendingNext; pendingNext=null;
+  const e=currentEvent();
   if(next==="nextmonth"){
-    state.month++;
-    state.day=1;
-    state.phase="morning";
+    state.month++; state.day=1; state.phase="morning";
     state.stamina=Math.min(100,state.stamina+12);
     state.currentId="may01_morning";
-  } else if(next){
-    // Date changes only when the narrative node explicitly enters a new day.
-    if(next.endsWith("_morning") && !next.startsWith("apr08") && !next.startsWith("apr09") && !next.startsWith("apr10") && !next.startsWith("apr11") && !next.startsWith("may01") && !next.startsWith("may02")){
-      // kept for future nodes
-    }
+  }else{
     const ne=events[next];
     if(ne && ne.month!==state.month){
-      state.month=ne.month;
-      state.day=ne.id.startsWith("may")?1:state.day;
-      state.phase=ne.phase;
-    } else if(ne){
-      // Explicit day progression for each morning node.
-      if(ne.phase==="morning" && e.phase==="after"){
-        state.day += 1;
-      }
+      state.month=ne.month; state.day=ne.id.startsWith("may")?1:state.day; state.phase=ne.phase;
+    }else if(ne){
+      if(ne.phase==="morning" && e.phase==="after") state.day++;
       state.phase=ne.phase;
     }
     state.currentId=next;
     state.stamina=Math.max(0,Math.min(100,state.stamina));
-  } else {
-    nextDay();
-    return;
   }
   render();
 }
-
 function nextDay(){
   const e=currentEvent();
+  if(document.getElementById("choices").style.display!=="none"){
+    alert("まず会話の選択肢を選んでください。");
+    return;
+  }
   // Do not let the generic button break the narrative. It advances to the next
   // morning node only when the current node has no choice transition.
   let nextId=null;
@@ -519,12 +550,13 @@ function loadGame(n){
   try{
     const loaded=JSON.parse(raw);
     state=loaded;
+    pendingNext=null;
     if(!state.currentId) state.currentId="apr08_morning";
     closeModal();render();
   }catch(e){alert("セーブデータを読み込めませんでした。")}
 }
 function ending(){
-  showModal(`<h2>卒業式</h2><p>一年間の青春が、静かに幕を閉じた。</p><p>美咲の好感度：${state.relations.misaki.affection}</p><p>総合能力：${Object.values(state.stats).reduce((a,b)=>a+b,0)}</p><button onclick="location.reload()">最初から</button>`);
+  showModal(`<h2>卒業式</h2><p>一年間の青春が、静かに幕を閉じた。</p><p>紗季の好感度：${state.relations.saki.affection}</p><p>総合能力：${Object.values(state.stats).reduce((a,b)=>a+b,0)}</p><button onclick="location.reload()">最初から</button>`);
 }
 render();
 </script>
