@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>青春を取り戻せ！ v1.1</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#182333;color:#202735;font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic",sans-serif}
+#app{max-width:1100px;margin:auto;background:#f7f3eb;min-height:100vh}
+header{background:#26394f;color:#fff;padding:13px 16px;display:flex;justify-content:space-between;align-items:center}
+h1{font-size:20px;margin:0}.small{font-size:11px;opacity:.75}.date{font-weight:bold}
+main{padding:12px}.hud{display:grid;grid-template-columns:1.2fr 2fr 1fr;gap:9px;margin-bottom:10px}.card{background:#fff;border:1px solid #ddd6ca;border-radius:11px;padding:10px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:7px}.stat{font-size:11px;text-align:center;background:#f2f4f5;border-radius:7px;padding:5px}.stat b{display:block;font-size:15px}
+.rels{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:7px}.rel{font-size:11px;background:#f6f1f2;padding:5px;border-radius:7px;text-align:center}.rel b{display:block}
+.scene{height:min(64vw,610px);min-height:480px;position:relative;overflow:hidden;border-radius:14px;background:#b8d0dd}
+.bg,.shade,.char{position:absolute;inset:0}.bg svg{width:100%;height:100%}.shade{background:linear-gradient(180deg,#00000000 40%,#111827a8 100%);pointer-events:none}
+.char{inset:auto 50% 58px auto;transform:translateX(50%);width:min(390px,52vw);filter:drop-shadow(0 10px 7px #0005);pointer-events:none}.char svg{width:100%;height:auto}
+.dialog{position:absolute;left:14px;right:14px;bottom:12px;background:#fffffff4;border-radius:11px;padding:11px 13px;box-shadow:0 5px 20px #0004}
+.name{font-weight:bold;color:#315879;margin-bottom:3px}.text{font-size:15px;line-height:1.6;min-height:48px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+button{border:0;border-radius:8px;padding:10px;cursor:pointer;font-weight:bold} .choice{background:#eaf0f4;color:#23384e}.choice:hover{background:#dce7ee}
+.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.controls button{background:#26394f;color:#fff}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}.log{font-size:11px;line-height:1.55;max-height:92px;overflow:auto}
+.overlay{position:fixed;inset:0;background:#111827cc;display:none;align-items:center;justify-content:center;padding:16px;z-index:5}.modal{width:min(680px,100%);background:#fff;border-radius:14px;padding:17px}.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.slots button{background:#eef2f4}
+@media(max-width:700px){.hud{grid-template-columns:1fr}.stats{grid-template-columns:repeat(5,1fr)}.scene{height:650px}.char{width:68vw}.choices{grid-template-columns:1fr}.bottom{grid-template-columns:1fr}.text{font-size:14px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div><h1>青春を取り戻せ！</h1><div class="small">本番版 v1.1 / 軽量ゲームエンジン</div></div><div class="date" id="date"></div></header>
+<main>
+<div class="hud">
+ <div class="card"><b>主人公</b><div class="stats" id="stats"></div></div>
+ <div class="card"><b>人間関係</b><div class="rels" id="rels"></div></div>
+ <div class="card"><b>コンディション</b><div id="condition" style="margin-top:8px;font-size:13px"></div></div>
+</div>
+<div class="scene">
+ <div class="bg" id="bg"></div><div class="shade"></div><div class="char" id="char"></div>
+ <div class="dialog"><div class="name" id="name"></div><div class="text" id="text"></div><div class="choices" id="choices"></div></div>
+</div>
+<div class="controls">
+ <button onclick="nextDay()">次の日へ</button><button onclick="saveMenu()">セーブ</button><button onclick="loadMenu()">ロード</button><button onclick="statusMenu()">ステータス</button>
+</div>
+<div class="bottom"><div class="card"><b>ゲームログ</b><div class="log" id="log"></div></div><div class="card"><b>本番版メモ</b><div style="font-size:11px;line-height:1.5;margin-top:5px">シナリオ・キャラクター・背景をデータとして追加できる構造。正式イラストへの差し替えも可能。</div></div></div>
+</main>
+</div>
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+
+<script>
+"use strict";
+
+const GAME_KEY="seishun_save_";
+const names={study:"学力",sports:"運動",art:"感性",social:"社交",luck:"運"};
+const charData={
+ misaki:{name:"美咲",affection:38,trust:24,desc:"明るく面倒見のいいクラスメイト。",type:"girl"},
+ kenta:{name:"健太",affection:31,trust:34,desc:"軽口が多いが頼れる友人。",type:"boy"},
+ teacher:{name:"佐藤先生",affection:22,trust:28,desc:"生徒をよく見ている担任。",type:"teacher"}
+};
+
+function freshState(){
+ return {
+  version:1,month:4,day:8,phase:"morning",stamina:80,money:5000,
+  stats:{study:30,sports:30,art:30,social:30,luck:30},
+  relations:JSON.parse(JSON.stringify(charData)),
+  flags:{metMisaki:true,festival:false},
+  log:[]
+ };
+}
+let state=freshState();
+
+const events=[
+ {id:"m1",month:4,phase:"morning",speaker:"美咲",who:"misaki",bg:"classroom",
+  text:"「おはよう。……今日、なんか眠そうじゃない？」",
+  choices:[
+   ["笑ってごまかす",{social:2,stamina:-4},{misaki:{affection:3}}],
+   ["正直に眠いと言う",{social:1,stamina:1},{misaki:{trust:3}}],
+   ["勉強していたと言う",{study:3,stamina:-7},{misaki:{affection:1}}],
+   ["そっとしておく",{stamina:2},{}]
+ ]},
+ {id:"a1",month:4,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
+  text:"「放課後どうする？ まだ新学期だし、街でも見て回るか？」",
+  choices:[
+   ["一緒に行く",{social:3,money:-500},{kenta:{trust:4}}],
+   ["図書室へ行く",{study:4,stamina:-5},{}],
+   ["部活を見に行く",{sports:3,stamina:-8},{}],
+   ["今日は帰る",{stamina:8},{}]
+ ]},
+ {id:"r1",month:5,phase:"after",speaker:"美咲",who:"misaki",bg:"rooftop",
+  text:"屋上。風に吹かれながら、美咲がぽつりと言った。「高校生活って、思ったより短いのかもね」",
+  choices:[
+   ["「まだ始まったばかりだよ」",{social:2},{misaki:{affection:5,trust:2}}],
+   ["「後悔しないようにしたい」",{luck:2},{misaki:{trust:5}}],
+   ["冗談で返す",{social:3},{misaki:{affection:2}}],
+   ["黙って景色を見る",{art:2},{misaki:{trust:2}}]
+ ]}
+];
+
+function pickEvent(){
+ let e=events.find(x=>x.month===state.month&&x.phase===state.phase);
+ if(!e)e=events.find(x=>x.month===state.month);
+ if(!e)e=events[state.day%events.length];
+ return e;
+}
+let current=pickEvent();
+
+function bgSvg(kind){
+ if(kind==="corridor")return `<svg viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#d9e5ea"/><path d="M0 150L500 260L1000 150V600H0Z" fill="#b6c0c5"/><path d="M0 150L500 260L1000 150" stroke="#7e8c96" stroke-width="12"/><rect x="65" y="220" width="170" height="190" fill="#f7f4e9" stroke="#929ca2" stroke-width="7"/><rect x="765" y="220" width="170" height="190" fill="#f7f4e9" stroke="#929ca2" stroke-width="7"/><rect y="450" width="1000" height="30" fill="#777f86"/></svg>`;
+ if(kind==="rooftop")return `<svg viewBox="0 0 1000 600"><defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#83afd0"/><stop offset="1" stop-color="#efb27f"/></linearGradient></defs><rect width="1000" height="600" fill="url(#g)"/><circle cx="790" cy="110" r="58" fill="#fff1bf" opacity=".8"/><path d="M0 405Q180 360 330 410T650 400T1000 410V600H0Z" fill="#6f916f"/><rect y="490" width="1000" height="110" fill="#a39d88"/><path d="M60 490V190M940 490V190M60 205H940" stroke="#76624f" stroke-width="18"/></svg>`;
+ return `<svg viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#b9d5e5"/><rect y="325" width="1000" height="275" fill="#e5dccb"/><rect x="80" y="70" width="260" height="250" fill="#eef7fa" stroke="#91acba" stroke-width="8"/><path d="M210 70V320M80 195H340" stroke="#91acba" stroke-width="8"/><rect y="325" width="1000" height="16" fill="#806a55"/><rect x="405" y="385" width="205" height="88" rx="5" fill="#6c7b83"/><rect x="665" y="385" width="205" height="88" rx="5" fill="#6c7b83"/><rect x="390" y="345" width="235" height="25" fill="#d0b181"/><rect x="650" y="345" width="235" height="25" fill="#d0b181"/></svg>`;
+}
+
+function personSvg(type){
+ let hair=type==="girl"?"#3b3030":"#303844";
+ let shirt=type==="girl"?"#8c5262":"#486b8c";
+ return `<svg viewBox="0 0 360 510"><ellipse cx="180" cy="480" rx="100" ry="16" fill="#000" opacity=".16"/><path d="M92 270Q105 190 180 185Q255 190 268 270L285 455H75Z" fill="${shirt}"/><path d="M110 275Q180 320 250 275L240 430H120Z" fill="#f5f1e8"/><path d="M118 180Q180 120 242 180L230 245Q180 275 130 245Z" fill="#f3c9aa"/><path d="M108 185Q112 105 180 92Q248 105 252 185Q220 145 205 142Q170 160 108 185Z" fill="${hair}"/><path d="M120 150Q80 220 110 285M240 150Q280 220 250 285" stroke="${hair}" stroke-width="29" fill="none" stroke-linecap="round"/><circle cx="157" cy="196" r="7" fill="#263241"/><circle cx="203" cy="196" r="7" fill="#263241"/><path d="M160 220Q180 231 200 220" stroke="#9c505a" stroke-width="4" fill="none"/><path d="M78 310L38 390M282 310L322 390" stroke="#f3c9aa" stroke-width="25" stroke-linecap="round"/><path d="M145 435L120 482M215 435L240 482" stroke="#f3c9aa" stroke-width="25" stroke-linecap="round"/><path d="M80 450H145M215 450H280" stroke="#28384b" stroke-width="24" stroke-linecap="round"/></svg>`;
+}
+
+function render(){
+ document.getElementById("date").textContent=`4月${state.day}日`;
+ document.getElementById("condition").innerHTML=`体力 <b>${state.stamina}</b> / 所持金 <b>¥${state.money.toLocaleString()}</b><br><span class="small">第${Math.ceil(state.day/7)}週・${state.phase==="morning"?"朝":"放課後"}</span>`;
+ document.getElementById("stats").innerHTML=Object.entries(state.stats).map(([k,v])=>`<div class="stat">${names[k]}<b>${v}</b></div>`).join("");
+ document.getElementById("rels").innerHTML=Object.values(state.relations).map(x=>`<div class="rel">${x.name}<b>♡ ${x.affection}</b><span>信頼 ${x.trust}</span></div>`).join("");
+ document.getElementById("bg").innerHTML=bgSvg(current.bg);
+ document.getElementById("char").innerHTML=personSvg(current.who==="misaki"?"girl":"boy");
+ document.getElementById("name").textContent=current.speaker;
+ document.getElementById("text").textContent=current.text;
+ document.getElementById("choices").innerHTML=current.choices.map((c,i)=>`<button class="choice" onclick="choose(${i})">${i+1}. ${c[0]}</button>`).join("");
+ document.getElementById("log").innerHTML=state.log.slice(-10).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
+}
+
+function choose(i){
+ const c=current.choices[i];
+ for(const [k,v] of Object.entries(c[1])){if(k in state.stats)state.stats[k]=Math.max(0,state.stats[k]+v);else state[k]=Math.max(0,state[k]+v);}
+ for(const [id,vals] of Object.entries(c[2]||{}))for(const [k,v] of Object.entries(vals))state.relations[id][k]=Math.max(0,state.relations[id][k]+v);
+ state.log.push(`${state.month}月${state.day}日：「${c[0]}」を選択`);
+ state.phase="after"; current=pickEvent(); render();
+}
+
+function nextDay(){
+ state.day++;
+ if(state.day>30){state.day=1;state.month++}
+ if(state.month>12){ending();return}
+ state.phase="morning";state.stamina=Math.min(100,state.stamina+12);current=pickEvent();render();
+}
+
+function showModal(html){document.getElementById("modal").innerHTML=html;document.getElementById("overlay").style.display="flex"}
+function closeModal(){document.getElementById("overlay").style.display="none"}
+
+function saveMenu(){showModal(`<h2>セーブ</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="saveGame(${n})">スロット ${n}<br><small>4月${state.day}日 / 美咲♡${state.relations.misaki.affection}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`)}
+function loadMenu(){showModal(`<h2>ロード</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="loadGame(${n})">スロット ${n}<br><small>${localStorage.getItem(GAME_KEY+n)?"データあり":"空"}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`)}
+function saveGame(n){localStorage.setItem(GAME_KEY+n,JSON.stringify(state));closeModal();state.log.push(`スロット${n}に保存しました。`);render()}
+function loadGame(n){const raw=localStorage.getItem(GAME_KEY+n);if(!raw){alert("セーブデータがありません。");return}try{state=JSON.parse(raw);current=pickEvent();closeModal();render()}catch(e){alert("セーブデータを読み込めませんでした。")}}
+function statusMenu(){showModal(`<h2>ステータス</h2><p>${Object.entries(state.stats).map(([k,v])=>`${names[k]}：${v}`).join("　/ ")}</p>${Object.values(state.relations).map(x=>`<p><b>${x.name}</b>　好感度 ${x.affection}　信頼 ${x.trust}<br><small>${x.desc}</small></p>`).join("")}<button onclick="closeModal()">閉じる</button>`)}
+function ending(){showModal(`<h2>卒業式</h2><p>一年間の青春が、静かに幕を閉じた。</p><p>美咲の好感度：${state.relations.misaki.affection}</p><p>総合能力：${Object.values(state.stats).reduce((a,b)=>a+b,0)}</p><button onclick="location.reload()">最初から</button>`)}
+render();
+</script>
+</body>
+</html>
