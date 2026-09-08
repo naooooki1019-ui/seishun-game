@@ -3,44 +3,130 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>青春を取り戻せ！ v1.1</title>
+<title>青春を取り戻せ！ v1.2</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#182333;color:#202735;font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic",sans-serif}
-#app{max-width:1100px;margin:auto;background:#f7f3eb;min-height:100vh}
-header{background:#26394f;color:#fff;padding:13px 16px;display:flex;justify-content:space-between;align-items:center}
-h1{font-size:20px;margin:0}.small{font-size:11px;opacity:.75}.date{font-weight:bold}
-main{padding:12px}.hud{display:grid;grid-template-columns:1.2fr 2fr 1fr;gap:9px;margin-bottom:10px}.card{background:#fff;border:1px solid #ddd6ca;border-radius:11px;padding:10px}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:7px}.stat{font-size:11px;text-align:center;background:#f2f4f5;border-radius:7px;padding:5px}.stat b{display:block;font-size:15px}
-.rels{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:7px}.rel{font-size:11px;background:#f6f1f2;padding:5px;border-radius:7px;text-align:center}.rel b{display:block}
-.scene{height:min(64vw,610px);min-height:480px;position:relative;overflow:hidden;border-radius:14px;background:#b8d0dd}
-.bg,.shade,.char{position:absolute;inset:0}.bg svg{width:100%;height:100%}.shade{background:linear-gradient(180deg,#00000000 40%,#111827a8 100%);pointer-events:none}
-.char{inset:auto 50% 58px auto;transform:translateX(50%);width:min(390px,52vw);filter:drop-shadow(0 10px 7px #0005);pointer-events:none}.char svg{width:100%;height:auto}
-.dialog{position:absolute;left:14px;right:14px;bottom:12px;background:#fffffff4;border-radius:11px;padding:11px 13px;box-shadow:0 5px 20px #0004}
-.name{font-weight:bold;color:#315879;margin-bottom:3px}.text{font-size:15px;line-height:1.6;min-height:48px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
-button{border:0;border-radius:8px;padding:10px;cursor:pointer;font-weight:bold} .choice{background:#eaf0f4;color:#23384e}.choice:hover{background:#dce7ee}
-.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.controls button{background:#26394f;color:#fff}
-.bottom{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}.log{font-size:11px;line-height:1.55;max-height:92px;overflow:auto}
-.overlay{position:fixed;inset:0;background:#111827cc;display:none;align-items:center;justify-content:center;padding:16px;z-index:5}.modal{width:min(680px,100%);background:#fff;border-radius:14px;padding:17px}.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.slots button{background:#eef2f4}
-@media(max-width:700px){.hud{grid-template-columns:1fr}.stats{grid-template-columns:repeat(5,1fr)}.scene{height:650px}.char{width:68vw}.choices{grid-template-columns:1fr}.bottom{grid-template-columns:1fr}.text{font-size:14px}}
+*{box-sizing:border-box}
+body{
+  margin:0;background:#111722;color:#202735;
+  font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic",sans-serif;
+}
+#app{max-width:1100px;margin:auto;background:#f5f1e8;min-height:100vh}
+header{
+  background:linear-gradient(135deg,#24364b,#172434);
+  color:#fff;padding:14px 18px;display:flex;justify-content:space-between;
+  align-items:center;border-bottom:3px solid #c89558
+}
+h1{font-size:21px;margin:0;letter-spacing:.04em}
+.small{font-size:11px;opacity:.72;margin-top:3px}
+.date{font-weight:bold;font-size:14px}
+main{padding:12px}
+.hud{margin-bottom:10px}
+.condition-card{
+  background:#fff;border:1px solid #ddd4c4;border-radius:12px;
+  padding:9px 13px;display:flex;align-items:center;gap:14px;
+  box-shadow:0 2px 8px #0000000d
+}
+.condition-label{font-size:10px;letter-spacing:.12em;color:#7a6b5a;font-weight:bold}
+#condition{font-size:13px;line-height:1.45}
+.scene{
+  height:min(70vw,650px);min-height:480px;position:relative;overflow:hidden;
+  border-radius:16px;background:#b8d0dd;box-shadow:0 8px 28px #0003
+}
+.bg,.shade,.char{position:absolute;inset:0}
+.bg svg{width:100%;height:100%;display:block}
+.shade{
+  background:linear-gradient(180deg,#00000000 30%,#101722c4 100%);
+  pointer-events:none
+}
+.char{
+  inset:auto 50% 78px auto;transform:translateX(50%);
+  width:min(410px,56vw);filter:drop-shadow(0 12px 8px #0005);
+  pointer-events:none;z-index:2
+}
+.char svg{width:100%;height:auto;display:block}
+.dialog{
+  position:absolute;left:14px;right:14px;bottom:12px;
+  background:#fffffff5;border:1px solid #ffffff;
+  border-radius:13px;padding:12px 14px;
+  box-shadow:0 8px 26px #0005;z-index:3
+}
+.name-row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.name{font-weight:bold;color:#2e526f}
+.role{
+  font-size:10px;padding:2px 7px;border-radius:999px;
+  background:#e8edf1;color:#607080;font-weight:bold
+}
+.text{font-size:15px;line-height:1.65;min-height:48px}
+.choice-label{
+  font-size:10px;color:#7a6b5a;font-weight:bold;
+  letter-spacing:.08em;margin-top:7px
+}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:5px}
+button{
+  border:0;border-radius:9px;padding:10px;cursor:pointer;
+  font-weight:bold;font-family:inherit
+}
+.choice{background:#e9eef1;color:#23384e;text-align:left}
+.choice:hover{background:#d8e4eb}
+.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.controls button{background:#26394f;color:#fff}
+.controls .primary{background:#b2763f;min-width:120px}
+.bottom{margin-top:8px}
+.log-card{
+  background:#fff;border:1px solid #ddd6ca;border-radius:10px;
+  padding:8px 11px;color:#53616e
+}
+.log-card summary{cursor:pointer;font-size:12px;font-weight:bold}
+.log{font-size:11px;line-height:1.55;max-height:110px;overflow:auto;margin-top:7px}
+.overlay{
+  position:fixed;inset:0;background:#111827cc;display:none;
+  align-items:center;justify-content:center;padding:16px;z-index:5
+}
+.modal{width:min(680px,100%);background:#fff;border-radius:14px;padding:17px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.slots button{background:#eef2f4}
+@media(max-width:700px){
+  header{padding:12px 14px}
+  h1{font-size:18px}
+  .scene{height:650px;min-height:0}
+  .char{width:72vw;bottom:92px}
+  .dialog{left:9px;right:9px;bottom:8px;padding:10px 11px}
+  .text{font-size:14px;min-height:45px}
+  .choices{grid-template-columns:1fr}
+  .condition-card{padding:8px 11px}
+}
 </style>
 </head>
 <body>
 <div id="app">
-<header><div><h1>青春を取り戻せ！</h1><div class="small">本番版 v1.1 / 軽量ゲームエンジン</div></div><div class="date" id="date"></div></header>
+<header><div><h1>青春を取り戻せ！</h1><div class="small">本番版 v1.2 / 軽量ゲームエンジン</div></div><div class="date" id="date"></div></header>
 <main>
 <div class="hud">
- <div class="card"><b>主人公</b><div class="stats" id="stats"></div></div>
- <div class="card"><b>人間関係</b><div class="rels" id="rels"></div></div>
- <div class="card"><b>コンディション</b><div id="condition" style="margin-top:8px;font-size:13px"></div></div>
+ <div class="condition-card">
+   <span class="condition-label">CONDITION</span>
+   <div id="condition"></div>
+ </div>
 </div>
 <div class="scene">
  <div class="bg" id="bg"></div><div class="shade"></div><div class="char" id="char"></div>
- <div class="dialog"><div class="name" id="name"></div><div class="text" id="text"></div><div class="choices" id="choices"></div></div>
+ <div class="dialog">
+ <div class="name-row"><div class="name" id="name"></div><span class="role">クラスメイト</span></div>
+ <div class="text" id="text"></div>
+ <div class="choice-label">YOUR CHOICE</div>
+ <div class="choices" id="choices"></div>
+</div>
 </div>
 <div class="controls">
- <button onclick="nextDay()">次の日へ</button><button onclick="saveMenu()">セーブ</button><button onclick="loadMenu()">ロード</button><button onclick="statusMenu()">ステータス</button>
+ <button class="primary" onclick="nextDay()">次の日へ</button>
+ <button onclick="saveMenu()">セーブ</button>
+ <button onclick="loadMenu()">ロード</button>
 </div>
-<div class="bottom"><div class="card"><b>ゲームログ</b><div class="log" id="log"></div></div><div class="card"><b>本番版メモ</b><div style="font-size:11px;line-height:1.5;margin-top:5px">シナリオ・キャラクター・背景をデータとして追加できる構造。正式イラストへの差し替えも可能。</div></div></div>
+<div class="bottom">
+ <details class="log-card">
+   <summary>ゲームログ</summary>
+   <div class="log" id="log"></div>
+ </details>
+</div>
 </main>
 </div>
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
@@ -103,25 +189,123 @@ function pickEvent(){
 let current=pickEvent();
 
 function bgSvg(kind){
- if(kind==="corridor")return `<svg viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#d9e5ea"/><path d="M0 150L500 260L1000 150V600H0Z" fill="#b6c0c5"/><path d="M0 150L500 260L1000 150" stroke="#7e8c96" stroke-width="12"/><rect x="65" y="220" width="170" height="190" fill="#f7f4e9" stroke="#929ca2" stroke-width="7"/><rect x="765" y="220" width="170" height="190" fill="#f7f4e9" stroke="#929ca2" stroke-width="7"/><rect y="450" width="1000" height="30" fill="#777f86"/></svg>`;
- if(kind==="rooftop")return `<svg viewBox="0 0 1000 600"><defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#83afd0"/><stop offset="1" stop-color="#efb27f"/></linearGradient></defs><rect width="1000" height="600" fill="url(#g)"/><circle cx="790" cy="110" r="58" fill="#fff1bf" opacity=".8"/><path d="M0 405Q180 360 330 410T650 400T1000 410V600H0Z" fill="#6f916f"/><rect y="490" width="1000" height="110" fill="#a39d88"/><path d="M60 490V190M940 490V190M60 205H940" stroke="#76624f" stroke-width="18"/></svg>`;
- return `<svg viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#b9d5e5"/><rect y="325" width="1000" height="275" fill="#e5dccb"/><rect x="80" y="70" width="260" height="250" fill="#eef7fa" stroke="#91acba" stroke-width="8"/><path d="M210 70V320M80 195H340" stroke="#91acba" stroke-width="8"/><rect y="325" width="1000" height="16" fill="#806a55"/><rect x="405" y="385" width="205" height="88" rx="5" fill="#6c7b83"/><rect x="665" y="385" width="205" height="88" rx="5" fill="#6c7b83"/><rect x="390" y="345" width="235" height="25" fill="#d0b181"/><rect x="650" y="345" width="235" height="25" fill="#d0b181"/></svg>`;
+ if(kind==="corridor")return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+ <defs>
+  <linearGradient id="corridorWall" x2="0" y2="1"><stop stop-color="#eef4f5"/><stop offset="1" stop-color="#c8d3d5"/></linearGradient>
+  <linearGradient id="corridorFloor" x2="0" y2="1"><stop stop-color="#aeb7bb"/><stop offset="1" stop-color="#737d82"/></linearGradient>
+ </defs>
+ <rect width="1000" height="600" fill="url(#corridorWall)"/>
+ <path d="M0 135L500 245L1000 135V410H0Z" fill="#dbe5e6"/>
+ <path d="M0 410L500 245L1000 410V600H0Z" fill="url(#corridorFloor)"/>
+ <path d="M0 135L500 245L1000 135" stroke="#78868d" stroke-width="10"/>
+ <path d="M500 245V600" stroke="#69747a" stroke-width="7" opacity=".55"/>
+ <g stroke="#8c989d" stroke-width="7" fill="#f7f4e9">
+   <rect x="54" y="207" width="190" height="190" rx="3"/>
+   <rect x="756" y="207" width="190" height="190" rx="3"/>
+ </g>
+ <g stroke="#a9b2b5" stroke-width="5">
+   <path d="M149 207V397M54 302H244M851 207V397M756 302H946"/>
+ </g>
+ <rect y="397" width="1000" height="17" fill="#665f59"/>
+ <g opacity=".28" stroke="#fff" stroke-width="4"><path d="M30 450L470 520M970 450L530 520"/></g>
+ <text x="500" y="115" text-anchor="middle" font-size="30" font-family="sans-serif" fill="#6f7d82" opacity=".55">2 - B</text>
+ </svg>`;
+ if(kind==="rooftop")return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+ <defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#78a8cf"/><stop offset=".65" stop-color="#d8b6a1"/><stop offset="1" stop-color="#f1d9b6"/></linearGradient>
+  <linearGradient id="roof" x2="0" y2="1"><stop stop-color="#b5aa95"/><stop offset="1" stop-color="#817968"/></linearGradient>
+ </defs>
+ <rect width="1000" height="600" fill="url(#sky)"/>
+ <circle cx="790" cy="105" r="58" fill="#fff4c7" opacity=".85"/>
+ <g fill="#fff" opacity=".28"><ellipse cx="180" cy="145" rx="120" ry="30"/><ellipse cx="360" cy="190" rx="150" ry="35"/></g>
+ <path d="M0 405Q180 350 335 405T660 395T1000 405V600H0Z" fill="#607d69"/>
+ <path d="M0 450L500 400L1000 450V600H0Z" fill="url(#roof)"/>
+ <g stroke="#765f4b" stroke-width="17" fill="none">
+  <path d="M60 490V185M940 490V185M60 205H940"/>
+  <path d="M210 475V260M500 450V260M790 475V260"/>
+ </g>
+ <g stroke="#a08a70" stroke-width="5"><path d="M0 530H1000M0 575H1000"/></g>
+ </svg>`;
+ return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+ <defs>
+  <linearGradient id="classSky" x2="0" y2="1"><stop stop-color="#a8cde2"/><stop offset="1" stop-color="#edf3f0"/></linearGradient>
+  <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#d5b77e"/><stop offset="1" stop-color="#9b784d"/></linearGradient>
+ </defs>
+ <rect width="1000" height="600" fill="#e8e0d1"/>
+ <rect x="0" y="0" width="1000" height="330" fill="url(#classSky)"/>
+ <g stroke="#879eaa" stroke-width="8" fill="#eef8fa">
+   <rect x="58" y="52" width="330" height="265" rx="4"/>
+ </g>
+ <g stroke="#9eb1ba" stroke-width="7">
+   <path d="M223 52V317M58 184H388"/>
+ </g>
+ <rect x="690" y="58" width="220" height="180" rx="4" fill="#405363"/>
+ <path d="M720 104H860M720 145H835M720 186H875" stroke="#d7e1dc" stroke-width="6" opacity=".7"/>
+ <rect y="330" width="1000" height="16" fill="#745a43"/>
+ <path d="M0 346H1000V600H0Z" fill="#d6c1a0"/>
+ <g>
+  <rect x="402" y="385" width="205" height="25" rx="4" fill="#b38a57"/>
+  <rect x="415" y="410" width="18" height="115" fill="#76583d"/>
+  <rect x="576" y="410" width="18" height="115" fill="#76583d"/>
+  <rect x="658" y="385" width="205" height="25" rx="4" fill="#b38a57"/>
+  <rect x="671" y="410" width="18" height="115" fill="#76583d"/>
+  <rect x="832" y="410" width="18" height="115" fill="#76583d"/>
+ </g>
+ <g fill="#c8aa73" opacity=".7"><rect x="392" y="371" width="225" height="12" rx="5"/><rect x="648" y="371" width="225" height="12" rx="5"/></g>
+ <path d="M0 560H1000" stroke="#a18a6b" stroke-width="5"/>
+ </svg>`;
 }
 
 function personSvg(type){
- let hair=type==="girl"?"#3b3030":"#303844";
- let shirt=type==="girl"?"#8c5262":"#486b8c";
- return `<svg viewBox="0 0 360 510"><ellipse cx="180" cy="480" rx="100" ry="16" fill="#000" opacity=".16"/><path d="M92 270Q105 190 180 185Q255 190 268 270L285 455H75Z" fill="${shirt}"/><path d="M110 275Q180 320 250 275L240 430H120Z" fill="#f5f1e8"/><path d="M118 180Q180 120 242 180L230 245Q180 275 130 245Z" fill="#f3c9aa"/><path d="M108 185Q112 105 180 92Q248 105 252 185Q220 145 205 142Q170 160 108 185Z" fill="${hair}"/><path d="M120 150Q80 220 110 285M240 150Q280 220 250 285" stroke="${hair}" stroke-width="29" fill="none" stroke-linecap="round"/><circle cx="157" cy="196" r="7" fill="#263241"/><circle cx="203" cy="196" r="7" fill="#263241"/><path d="M160 220Q180 231 200 220" stroke="#9c505a" stroke-width="4" fill="none"/><path d="M78 310L38 390M282 310L322 390" stroke="#f3c9aa" stroke-width="25" stroke-linecap="round"/><path d="M145 435L120 482M215 435L240 482" stroke="#f3c9aa" stroke-width="25" stroke-linecap="round"/><path d="M80 450H145M215 450H280" stroke="#28384b" stroke-width="24" stroke-linecap="round"/></svg>`;
+ let girl = type==="girl";
+ let hair = girl ? "#3a2b2a" : "#28313b";
+ let hair2 = girl ? "#5a3e39" : "#3c4854";
+ let jacket = girl ? "#596d86" : "#425b73";
+ let shirt = girl ? "#f3eee5" : "#f3eee5";
+ return `<svg viewBox="0 0 360 540" aria-hidden="true">
+  <defs>
+   <linearGradient id="skin" x2="0" y2="1"><stop stop-color="#f7d5bb"/><stop offset="1" stop-color="#eab899"/></linearGradient>
+   <linearGradient id="jacket" x2="0" y2="1"><stop stop-color="${jacket}"/><stop offset="1" stop-color="#33485e"/></linearGradient>
+  </defs>
+  <ellipse cx="180" cy="512" rx="112" ry="18" fill="#000" opacity=".18"/>
+  <!-- torso / uniform -->
+  <path d="M84 284Q95 238 143 224H217Q265 238 276 284L292 480H68Z" fill="url(#jacket)"/>
+  <path d="M132 242L180 302L228 242L215 415H145Z" fill="${shirt}"/>
+  <path d="M180 302L164 333H196Z" fill="#b07b55"/>
+  <path d="M153 321L180 302L207 321L198 392H162Z" fill="#8f4654" opacity="${girl?0.85:0}"/>
+  <path d="M111 282L82 385M249 282L278 385" stroke="url(#skin)" stroke-width="27" stroke-linecap="round"/>
+  <!-- neck and face -->
+  <path d="M153 215V250Q180 270 207 250V215Z" fill="url(#skin)"/>
+  <path d="M116 145Q180 91 244 145L231 227Q180 270 129 227Z" fill="url(#skin)"/>
+  <!-- ears -->
+  <circle cx="119" cy="192" r="14" fill="#efc1a5"/><circle cx="241" cy="192" r="14" fill="#efc1a5"/>
+  <!-- hair -->
+  <path d="M108 177Q101 101 180 82Q259 101 252 177L231 160Q214 128 180 125Q145 128 129 160Z" fill="${hair}"/>
+  <path d="M108 161Q93 213 122 247Q139 217 137 170Z" fill="${hair2}"/>
+  <path d="M252 161Q267 213 238 247Q221 217 223 170Z" fill="${hair2}"/>
+  ${girl?`<path d="M111 142Q82 151 75 192Q105 184 126 162Z" fill="${hair}"/><path d="M249 142Q278 151 285 192Q255 184 234 162Z" fill="${hair}"/>`:``}
+  <!-- eyes -->
+  <ellipse cx="155" cy="190" rx="9" ry="12" fill="#26303a"/>
+  <ellipse cx="205" cy="190" rx="9" ry="12" fill="#26303a"/>
+  <circle cx="152" cy="186" r="3" fill="#fff"/><circle cx="202" cy="186" r="3" fill="#fff"/>
+  <path d="M143 170Q155 163 166 169M194 169Q205 163 217 170" stroke="#433b38" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M160 220Q180 232 200 220" stroke="#a5575c" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- hands / legs -->
+  <path d="M78 384L52 432M282 384L308 432" stroke="url(#skin)" stroke-width="24" stroke-linecap="round"/>
+  <path d="M146 470L121 514M214 470L239 514" stroke="#d6a884" stroke-width="25" stroke-linecap="round"/>
+  <path d="M82 515H143M217 515H278" stroke="#263747" stroke-width="24" stroke-linecap="round"/>
+  <!-- subtle highlight -->
+  <path d="M137 270Q180 292 223 270" stroke="#ffffff" stroke-width="3" opacity=".22" fill="none"/>
+ </svg>`;
 }
 
 function render(){
  document.getElementById("date").textContent=`4月${state.day}日`;
- document.getElementById("condition").innerHTML=`体力 <b>${state.stamina}</b> / 所持金 <b>¥${state.money.toLocaleString()}</b><br><span class="small">第${Math.ceil(state.day/7)}週・${state.phase==="morning"?"朝":"放課後"}</span>`;
- document.getElementById("stats").innerHTML=Object.entries(state.stats).map(([k,v])=>`<div class="stat">${names[k]}<b>${v}</b></div>`).join("");
- document.getElementById("rels").innerHTML=Object.values(state.relations).map(x=>`<div class="rel">${x.name}<b>♡ ${x.affection}</b><span>信頼 ${x.trust}</span></div>`).join("");
+ document.getElementById("condition").innerHTML=`体力 <b>${state.stamina}</b>　・　所持金 <b>¥${state.money.toLocaleString()}</b>　・　${state.phase==="morning"?"朝":"放課後"}`;
  document.getElementById("bg").innerHTML=bgSvg(current.bg);
  document.getElementById("char").innerHTML=personSvg(current.who==="misaki"?"girl":"boy");
  document.getElementById("name").textContent=current.speaker;
+ document.querySelector(".role").textContent=current.who==="misaki"?"クラスメイト":"登場人物";
  document.getElementById("text").textContent=current.text;
  document.getElementById("choices").innerHTML=current.choices.map((c,i)=>`<button class="choice" onclick="choose(${i})">${i+1}. ${c[0]}</button>`).join("");
  document.getElementById("log").innerHTML=state.log.slice(-10).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
