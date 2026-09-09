@@ -226,6 +226,14 @@ main{padding:14px}
 @media(max-width:700px){.wata-crop{width:62%}.wata-crop .asset-character{height:100%;width:auto}}
 .wata-char .asset-note{position:absolute;right:3px;bottom:3px;z-index:3;background:#101b28cc;color:#fff;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800}
 
+/* v3.1: 素材表示をゲーム画面に馴染ませ、紹介画像の人物だけを正しく見せる */
+.asset-note{display:none!important}
+.wata-char{width:270px!important;height:500px!important;right:3%!important;top:auto!important;bottom:190px!important;overflow:hidden!important;filter:drop-shadow(0 16px 12px #0007)!important}
+.wata-crop{position:absolute;left:0;bottom:0;width:235px;height:100%;overflow:hidden;display:block}
+.wata-crop .asset-character{position:absolute;left:0;bottom:0;height:100%;width:auto;max-width:none;object-fit:contain;object-position:left bottom;display:block}
+.wata-crop.fallback .asset-character{height:100%;width:100%;object-fit:contain}
+@media(max-width:700px){.wata-char{width:205px!important;height:420px!important;right:2%!important;bottom:190px!important}.wata-crop{width:180px}.wata-crop .asset-character{height:100%}}
+
 /* 選択肢そのものは残し、見出しや説明ラベルだけを表示しない */
 .choice-label,.result-label{display:none!important}
 .page-indicator{display:none}
@@ -255,7 +263,7 @@ main{padding:14px}
 </head>
 <body>
 <div id="app">
-<header><div class="game-brand"><div class="genre-label">学園群像劇</div><h1>青春を取り戻せ！</h1><div class="version-label">v2.9</div></div><div class="date" id="dateTop"></div></header>
+<header><div class="game-brand"><div class="genre-label">学園群像劇</div><h1>青春を取り戻せ！</h1><div class="version-label">v3.1</div></div><div class="date" id="dateTop"></div></header>
 <main>
 <div class="hud-grid">
  <div class="hud-item"><span class="hud-icon" id="seasonIcon">🌸</span><div><div class="hud-caption">月</div><div class="hud-value" id="date"></div></div></div>
@@ -342,7 +350,7 @@ function assetExists(path, callback){
 
 function freshState(){
   return {
-    version:3,month:4,day:8,phase:"morning",stamina:80,money:5000,club:"未所属",
+    version:3.1,month:4,day:8,phase:"morning",stamina:80,money:5000,club:"未所属",
     stats:{study:30,sports:30,art:30,social:30,luck:30},
     relations:JSON.parse(JSON.stringify(charData)),
     flags:{metMisaki:true,metKenta:false,metLio:false,festival:false},
@@ -595,6 +603,77 @@ const events={
       ["今日も学校生活を続ける",{social:2,study:1},{}, "month_end"]
     ]
   },
+  may01_morning:{
+    id:"may01_morning",month:5,day:1,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    pages:["五月一日。新しい月になっても、僕の席から見える景色は少しずつ変わっていた。転校初日のような緊張は、もう少しだけ薄れている。","「四月は慌ただしかったな。五月は、自分で動くことを一つ決めてみるといい」"],
+    choices:[
+      ["クラスの人に自分から話しかける",{social:3},{teacher:{trust:3}},"may01_after"],
+      ["部活動をもっと頑張る",{sports:2,art:2},{teacher:{trust:3}},"may01_after"],
+      ["勉強と学校生活を両立する",{study:3},{teacher:{trust:4}},"may01_after"]
+    ]
+  },
+  may01_after:{
+    id:"may01_after",month:5,day:1,phase:"after",speaker:"紗季",who:"saki",bg:"classroom",
+    pages:["五月最初の放課後。紗季が教室の入口から手を振った。","「新しい月だね。四月より、ちょっとだけこのクラスに馴染んできたんじゃない？」"],
+    choices:[
+      ["「そうかもしれない。みんなと話すのが楽しくなってきた」",{social:3},{saki:{trust:4}},"may01_night"],
+      ["「まだ少し緊張するけどね」",{social:1},{saki:{trust:3}},"may01_night"],
+      ["「これからもっと色々やってみたい」",{luck:2,social:2},{saki:{trust:4}},"may01_night"]
+    ]
+  },
+  may01_night:{
+    id:"may01_night",month:5,day:1,phase:"night",speaker:"紗季",who:"saki",bg:"night",email:true,
+    pages:["その日の夜。紗季からメッセージが届いた。","「四月は転校初日だったのに、もう五月だね。これからもっと色んなことが起きそう。明日も学校で話そうね」"],
+    choices:[
+      ["「うん。明日もよろしく」",{social:2},{saki:{trust:4}},"may02_morning"],
+      ["「こちらこそ。楽しみにしてる」",{luck:2},{saki:{trust:4}},"may02_morning"],
+      ["「まずは無理せずいこう」",{stamina:2},{saki:{trust:3}},"may02_morning"]
+    ]
+  },
+  may02_morning:{
+    id:"may02_morning",month:5,day:2,phase:"morning",speaker:"健太",who:"kenta",bg:"classroom",
+    pages:["五月二日の朝。健太が席の横まで来て、軽く手を上げた。","「おはよう。なんかもう、転校生って感じしなくなったな」"],
+    choices:[
+      ["「それはみんなのおかげだよ」",{social:3},{kenta:{trust:4}},"may02_after"],
+      ["「まだまだこれからだよ」",{luck:2},{kenta:{trust:3}},"may02_after"],
+      ["「健太も最初から話しかけてくれたしね」",{social:2},{kenta:{trust:5}},"may02_after"]
+    ]
+  },
+  may02_after:{
+    id:"may02_after",month:5,day:2,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
+    pages:["放課後。屋上から校庭を眺める。四月の終わりには想像していなかった景色が、少しずつ僕の日常になっていた。","五月は、ここから始まる。"],
+    choices:[["次へ進む",{stamina:3},{},"may03_morning"]]
+  },
+  may03_morning:{
+    id:"may03_morning",month:5,day:3,phase:"morning",speaker:"ナレーション",who:"narration",bg:"classroom",
+    pages:["五月三日。新しい一日が始まった。","僕は自分の席に座り、昨日までとは少し違う気持ちで教室を見渡した。"],
+    choices:[["一日を始める",{stamina:2},{},"may04_morning"]]
+  },
+  may04_morning:{
+    id:"may04_morning",month:5,day:4,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
+    pages:["五月四日の朝。紗季が机の横で立ち止まった。","「今日は放送部の活動があるけど、終わったら少し話さない？　最近のこと、聞きたいんだ」"],
+    choices:[["「もちろん。話そう」",{social:2},{saki:{trust:4}},"may04_after"],["「活動が終わってからでいいよ」",{stamina:1},{saki:{trust:3}},"may04_after"]]
+  },
+  may04_after:{
+    id:"may04_after",month:5,day:4,phase:"after",speaker:"健太",who:"kenta",bg:"classroom",
+    pages:["放課後。健太も合流して、三人で文化祭の企画について話すことになった。","「せっかくだし、今度はクラス全体を巻き込んでみようぜ」"],
+    choices:[["「やってみよう」",{social:3,luck:2},{kenta:{trust:4}},"may04_night"],["「まずはできることを整理しよう」",{study:2,social:1},{kenta:{trust:3}},"may04_night"]]
+  },
+  may04_night:{
+    id:"may04_night",month:5,day:4,phase:"night",speaker:"健太",who:"kenta",bg:"night",email:true,
+    pages:["その日の夜。健太からメッセージが届いた。","「今日の話、けっこう面白かったな。明日、先生にも企画を見せてみようぜ」"],
+    choices:[["「いいね。明日持っていこう」",{social:2},{kenta:{trust:4}},"may05_morning"],["「もう少し考えてからにしよう」",{study:2},{kenta:{trust:3}},"may05_morning"]]
+  },
+  may05_morning:{
+    id:"may05_morning",month:5,day:5,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    pages:["五月五日の朝。企画書を持って佐藤先生のところへ行った。","「なるほど。四月に比べると、ずいぶん自分から動くようになったな」"],
+    choices:[["「みんなが声をかけてくれたからです」",{social:2},{teacher:{trust:4}},"may05_after"],["「まだまだこれからです」",{luck:2},{teacher:{trust:3}},"may05_after"]]
+  },
+  may05_after:{
+    id:"may05_after",month:5,day:5,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
+    pages:["放課後。屋上から校庭を眺めながら、僕はふと思った。","転校してきたばかりの頃は、ここで過ごす自分の姿なんて想像できなかった。けれど、物語はもう動き始めている。"],
+    choices:[]
+  },
   month_end:{
     id:"month_end",month:4,day:16,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
     pages:["四月の前半。僕はまだ、特別な何者でもない。","けれど、少しずつ「一緒に過ごした」と言える友達が増えている。青春は、たぶんこういうところから始まる。"],
@@ -834,12 +913,12 @@ function render(){
   document.getElementById("timeIcon").textContent=tm.icon;
   document.getElementById("timeValue").textContent=tm.label;
   const bgEl=document.getElementById("bg");
-bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classroom}" alt="学校の背景" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="bg-fallback" style="display:none;width:100%;height:100%;">${bgSvg(e.bg)}</div><div class="asset-note">背景：みんちりえ</div>`;
+bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classroom}" alt="学校の背景" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="bg-fallback" style="display:none;width:100%;height:100%;">${bgSvg(e.bg)}</div>`;
   const typeMap={saki:"girl",lio:"girl",kenta:"boy",teacher:"teacher"};
   const type=typeMap[e.who]||"boy";
   const charSrc=ASSETS.characters[e.who]||ASSETS.fallbackCharacter;
-  const charLabel=(e.who==="saki"||e.who==="lio"||e.who==="kenta")?"人物：わたおきば":"人物：シルエット";
-  document.getElementById("char").innerHTML=`<div class="wata-crop"><img class="asset-character" src="${charSrc}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;this.closest('.wata-crop').style.overflow='visible';this.closest('.wata-crop').style.width='100%';this.nextElementSibling && (this.nextElementSibling.textContent='人物：シルエット（素材未配置）');"></div><div class="asset-note">${charLabel}</div>`;
+  
+  document.getElementById("char").innerHTML=`<div class="wata-crop"><img class="asset-character" src="${charSrc}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;this.closest('.wata-crop').classList.add('fallback');"></div>`;
   document.getElementById("char").className=`char silhouette-char wata-char ${type}`;
   document.getElementById("name").textContent=e.speaker;
   document.querySelector(".role").textContent=e.email?"メール":speakerRole(e);
@@ -894,7 +973,11 @@ function choose(i){
   state.pageIndex=0;
   let result=e.email
     ? "返信を送った。しばらくすると、画面が暗くなり、夜が静かに更けていった。"
-    : (e.who==="saki" ? "紗季は少し驚いたあと、ふっと笑った。「うん。それなら、もっと面白くなりそう」"
+    : (e.id==="apr08_morning" ? [
+        "佐藤先生は安心したようにうなずいた。「それでいい。最初から無理に馴染もうとしなくていい。まずは一日の流れを覚えていこう」",
+        "佐藤先生はうなずいた。「その気持ちは大切だ。ただ、相手の様子を見ながら声をかけることも忘れないようにな」",
+        "佐藤先生は少し声を和らげた。「緊張するのは当然だ。転校初日ならなおさらだな。困ったことがあれば、いつでも私に聞きなさい」"
+      ][i] : e.who==="saki" ? "紗季は少し驚いたあと、ふっと笑った。「うん。それなら、もっと面白くなりそう」"
     : e.who==="kenta" ? "健太は満足そうに笑った。「よし、決まりだな。じゃあ次は――」"
     : e.who==="teacher" ? "佐藤先生は小さくうなずいた。「その調子だ。自分で考えて選べばいい」"
     : "その選択を胸に、僕は次の時間へ進んだ。");
