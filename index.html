@@ -237,7 +237,7 @@ main{padding:14px}
 /* ゲームロゴ：スマホでも改行・画面外へのはみ出しを防止 */
 .game-brand{min-width:0;max-width:calc(100% - 92px);text-align:left;padding:0 0 2px;overflow:hidden}
 .genre-label{display:block;margin:0 0 2px 2px;font-size:9px;font-weight:900;letter-spacing:.18em;color:#c7d3dc;text-shadow:0 1px 3px #0008;white-space:nowrap}
-.game-brand h1{margin:0;display:block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(24px,7vw,36px);font-weight:900;letter-spacing:.045em;line-height:1.05;color:#fff;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:clip;text-shadow:0 2px 0 #17222c,0 4px 12px #0009,-1px -1px 0 #d8e1e8,1px 1px 0 #7890a0}
+.game-brand h1{margin:0;display:block;font-family:"Hiragino Maru Gothic ProN","Yu Gothic UI","Meiryo",sans-serif;font-size:clamp(22px,6.4vw,34px);font-weight:900;letter-spacing:.02em;line-height:1.08;color:#fff;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:clip;text-shadow:0 2px 0 #17304a,0 4px 10px #0008,-1px -1px 0 #8fd8ff,1px 1px 0 #5c9fd0}
 .game-brand h1::after{content:"";display:block;height:2px;margin-top:4px;width:68%;background:linear-gradient(90deg,#d7aa68,#7d96a6,transparent);border-radius:999px;box-shadow:0 1px 5px #0006}
 @media(max-width:700px){
   .silhouette-char{top:8px!important;right:1%!important;width:145px!important;height:190px!important}
@@ -265,13 +265,13 @@ main{padding:14px}
  <div class="dialog">
  <div class="time-in-dialog" id="timeInDialog" style="display:none"></div>
  <div class="name-row"><div class="name" id="name"></div><span class="role">クラスメイト</span></div>
- <div class="page-indicator" id="pageIndicator"></div><div style="clear:both"></div><div class="text" id="text"></div><button class="page-next" id="pageNext" onclick="nextPage()">次へ</button>
+ <div class="page-indicator" id="pageIndicator"></div><div style="clear:both"></div><div class="text" id="text"></div><button type="button" class="page-next" id="pageNext">次へ</button>
  <div class="choices" id="choices"></div>
  <div class="result-panel" id="resultPanel">
    <div class="player-reply" id="playerReply"></div>
    <div class="result-text" id="resultText"></div>
    <div id="purchaseNotice"></div>
-   <button class="continue" onclick="continueStory()">次へ</button>
+   <button type="button" class="continue" id="continueButton">次へ</button>
  </div>
 </div>
 </div>
@@ -871,18 +871,17 @@ bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classro
   const last=state.pageIndex===pages.length-1;
   const pageBtn=document.getElementById("pageNext");
   pageBtn.disabled=false;
-  if(e.isNightReply && last){
-    pageBtn.style.display="block";
-    pageBtn.textContent="次へ";
-    pageBtn.onclick=nextPage;
-    pendingNext=e.autoNext;
-  }else{
-    pageBtn.style.display=last?"none":"block";
-    pageBtn.textContent="次へ";
-    pageBtn.onclick=nextPage;
+  pageBtn.style.display=last && !e.isNightReply ? "none" : "block";
+  pageBtn.textContent="次へ";
+  pageBtn.onclick=null;
+  pageBtn.onclick=nextPage;
+  if(e.isNightReply && last) pendingNext=e.autoNext;
+  const cont=document.getElementById("continueButton");
+  if(cont) {
+    cont.disabled=false;
+    cont.style.display="none";
+    cont.onclick=continueStory;
   }
-  const cont=document.querySelector(".continue");
-  if(cont) cont.style.display=(e.isNightReply && last)?"none":"";
   document.getElementById("choices").innerHTML=last ? (e.choices||[]).map((c,i)=>`<button class="choice ${e.email?'email-choice':''}" onclick="choose(${i})"><span class="num">${i+1}</span><span>${c[0]}</span></button>`).join("") : "";
   document.getElementById("choices").style.display=last && (e.choices||[]).length?"":"none";
   document.getElementById("purchaseNotice").innerHTML="";
@@ -890,19 +889,43 @@ bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classro
   document.getElementById("log").innerHTML=state.log.slice(-12).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
 }
 function nextPage(){
-  const e=currentEvent(), pages=e.pages||[e.text||""];
+  const e=currentEvent();
+  const pages=e.pages||[e.text||""];
   const btn=document.getElementById("pageNext");
-  if(btn){btn.disabled=true;btn.style.display="none";}
-  if((state.pageIndex||0)<pages.length-1){
+  if(!e || !pages.length) return;
+
+  // 「次へ」は1クリックにつき1回だけ処理。先に無効化しすぎて
+  // 初回表示で止まることがないよう、画面更新後にrender()へ任せる。
+  if(btn && btn.dataset.busy==="1") return;
+  if(btn) btn.dataset.busy="1";
+
+  if((state.pageIndex||0) < pages.length-1){
     state.pageIndex=(state.pageIndex||0)+1;
     render();
+    const b=document.getElementById("pageNext");
+    if(b) b.dataset.busy="0";
     return;
   }
+
   if(e.isNightReply && e.autoNext){
     pendingNext=e.autoNext;
+    const b=document.getElementById("pageNext");
+    if(b) b.style.display="none";
     continueStory();
+    return;
+  }
+
+  // 通常イベントの最終ページは選択肢を選んで進む仕様。
+  // 選択肢がないイベントだけは、そのまま次へ進める。
+  if(!(e.choices||[]).length && e.next){
+    pendingNext=e.next;
+    continueStory();
+  }else{
+    const b=document.getElementById("pageNext");
+    if(b) b.dataset.busy="0";
   }
 }
+
 let pendingNext=null;
 let transitionNext=null;
 function choiceReaction(e, i, text){
@@ -1149,7 +1172,13 @@ function loadGame(n){
 function ending(){
   showModal(`<h2>卒業式</h2><p>一年間の青春が、静かに幕を閉じた。</p><p>紗季の好感度：${state.relations.saki.affection}</p><p>総合能力：${Object.values(state.stats).reduce((a,b)=>a+b,0)}</p><button onclick="location.reload()">最初から</button>`);
 }
+const continueButton=document.getElementById("continueButton");
+if(continueButton) continueButton.onclick=continueStory;
+const initialPageButton=document.getElementById("pageNext");
+if(initialPageButton) initialPageButton.onclick=nextPage;
 render();
+const firstPageButton=document.getElementById("pageNext");
+if(firstPageButton) firstPageButton.dataset.busy="0";
 </script>
 </body>
 </html>
