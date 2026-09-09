@@ -231,17 +231,11 @@ main{padding:14px}
 /* 時間・日付の変化は会話欄内だけで表示 */
 .time-in-dialog{display:block!important;margin:0 0 8px;padding:7px 10px;background:#25384b;color:#f3d79f;border-left:4px solid #d7aa68;border-radius:7px;text-align:left;font-size:13px}
 .time-in-dialog:empty{display:none!important}
-/* ゲームロゴ：ポップなゴシック体。スマホでも「！」まで必ず収める */
-.game-brand{min-width:0;max-width:calc(100% - 90px);text-align:left;padding:1px 0 2px;overflow:visible}
-.genre-label{display:block;margin:0 0 2px 2px;font-size:9px;font-weight:900;letter-spacing:.16em;color:#e7f4ff;text-shadow:0 1px 3px #0008;white-space:nowrap}
-.game-brand h1{margin:0;display:block;font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic UI","Meiryo",sans-serif;font-size:clamp(19px,5.6vw,30px);font-weight:900;letter-spacing:-.04em;line-height:1.08;color:#fff;white-space:nowrap;overflow:visible;text-shadow:2px 2px 0 #27577d,0 4px 10px #0008,-1px -1px 0 #8fd8ff,1px 1px 0 #5c9fd0}
-.game-brand h1::after{content:"";display:block;height:2px;margin-top:4px;width:68%;background:linear-gradient(90deg,#ffd36a,#7d96a6,transparent);border-radius:999px}
-@media(max-width:700px){
-  header{height:72px;padding:8px 12px}
-  .game-brand{max-width:calc(100% - 62px)}
-  .game-brand h1{font-size:clamp(18px,5.4vw,25px);letter-spacing:-.055em}
-  .genre-label{font-size:8px;letter-spacing:.12em}
-}
+/* ゲームロゴ */
+.game-brand{text-align:left;padding:2px 0 3px}
+.genre-label{display:inline-block;margin:0 0 2px 4px;font-size:10px;font-weight:900;letter-spacing:.28em;color:#c7d3dc;text-shadow:0 1px 3px #0008}
+.game-brand h1{margin:0;display:inline-block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(28px,6vw,42px);font-weight:900;letter-spacing:.08em;line-height:1.05;color:#fff;text-shadow:0 2px 0 #17222c,0 4px 12px #0009,-1px -1px 0 #d8e1e8,1px 1px 0 #7890a0}
+.game-brand h1::after{content:"";display:block;height:3px;margin-top:6px;width:72%;background:linear-gradient(90deg,#d7aa68,#7d96a6,transparent);border-radius:999px;box-shadow:0 1px 5px #0006}
 @media(max-width:700px){
   .silhouette-char{top:8px!important;right:1%!important;width:145px!important;height:190px!important}
   .silhouette-person{transform:scale(.72);transform-origin:bottom center}
@@ -249,11 +243,18 @@ main{padding:14px}
   .scene{padding-top:205px}
   .player-reply{font-size:15px}
 }
+
+/* v2.9: compact pop logo */
+.game-brand{min-width:0;max-width:calc(100% - 105px);text-align:left;line-height:1}
+.genre-label{display:block;margin:0 0 2px 2px;font-size:8px;font-weight:900;letter-spacing:.14em;color:#e7f4ff;white-space:nowrap}
+.game-brand h1{margin:0;font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic UI","Meiryo",sans-serif;font-size:24px;font-weight:900;letter-spacing:-.06em;line-height:1.05;white-space:nowrap;color:#fff;text-shadow:2px 2px 0 #27577d,0 3px 8px #0008,-1px -1px 0 #8fd8ff,1px 1px 0 #5c9fd0}
+.version-label{margin-top:2px;font-size:8px;font-weight:800;letter-spacing:.08em;color:#b9c7d2}
+@media(max-width:700px){.game-brand{max-width:calc(100% - 72px)}.game-brand h1{font-size:20px;letter-spacing:-.065em}.genre-label{font-size:7px}.version-label{font-size:7px}}
 </style>
 </head>
 <body>
 <div id="app">
-<header><div class="game-brand"><div class="genre-label">学園群像劇</div><h1>青春を取り戻せ！</h1></div><div class="date" id="dateTop"></div></header>
+<header><div class="game-brand"><div class="genre-label">学園群像劇</div><h1>青春を取り戻せ！</h1><div class="version-label">v2.9</div></div><div class="date" id="dateTop"></div></header>
 <main>
 <div class="hud-grid">
  <div class="hud-item"><span class="hud-icon" id="seasonIcon">🌸</span><div><div class="hud-caption">月</div><div class="hud-value" id="date"></div></div></div>
@@ -268,7 +269,7 @@ main{padding:14px}
  <div class="dialog">
  <div class="time-in-dialog" id="timeInDialog" style="display:none"></div>
  <div class="name-row"><div class="name" id="name"></div><span class="role">クラスメイト</span></div>
- <div class="page-indicator" id="pageIndicator"></div><div style="clear:both"></div><div class="text" id="text"></div><button type="button" class="page-next" id="pageNext" onclick="nextPage()">次へ</button>
+ <div class="page-indicator" id="pageIndicator"></div><div style="clear:both"></div><div class="text" id="text"></div><button type="button" class="page-next" id="pageNext">次へ</button>
  <div class="choices" id="choices"></div>
  <div class="result-panel" id="resultPanel">
    <div class="player-reply" id="playerReply"></div>
@@ -990,6 +991,15 @@ function loadGame(n){
 function ending(){
   showModal(`<h2>卒業式</h2><p>一年間の青春が、静かに幕を閉じた。</p><p>紗季の好感度：${state.relations.saki.affection}</p><p>総合能力：${Object.values(state.stats).reduce((a,b)=>a+b,0)}</p><button onclick="location.reload()">最初から</button>`);
 }
+
+// v2.9: 初回表示時から「次へ」を確実に有効化する
+(function bindNextButton(){
+  const btn=document.getElementById("pageNext");
+  if(!btn) return;
+  btn.type="button";
+  btn.disabled=false;
+  btn.onclick=function(ev){ ev.preventDefault(); ev.stopPropagation(); nextPage(); };
+})();
 render();
 </script>
 </body>
