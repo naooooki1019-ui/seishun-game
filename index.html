@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>青春を取り戻せ！ v2.1</title>
+<title>青春を取り戻せ！</title>
 <style>
 *{box-sizing:border-box}
 :root{--ink:#18212b;--paper:#f4efe5;--gold:#d7aa68;--navy:#1a2635}
@@ -137,7 +137,7 @@ main{padding:14px}
 .quirky-char{display:none!important}
 .time-in-dialog{margin:0 0 12px;padding:12px 14px;border-left:4px solid #d7aa68;background:#f1eadf;color:#4a3b2b;border-radius:9px;font-weight:900;font-size:16px;text-align:center}
 
-/* v1.8 青春群像劇 / スマホ最適化 */
+/* v1.8 学園群像劇 / スマホ最適化 */
 .scene{
   height:auto; min-height:0; padding-top:300px; overflow:visible;
   border-radius:14px; background:#8799a2;
@@ -192,7 +192,7 @@ main{padding:14px}
   .result-text{font-size:15px}
 }
 
-/* v1.9 青春群像劇：人物シルエット */
+/* v1.9 学園群像劇：人物シルエット */
 .silhouette-char{display:flex!important;align-items:flex-end;justify-content:center;right:3%!important;bottom:0!important;top:auto!important;width:230px!important;height:265px!important;filter:none!important;animation:none!important}
 .silhouette-person{position:relative;width:150px;height:255px;filter:drop-shadow(0 8px 8px #0004)}
 .silhouette-person .head{position:absolute;left:50%;transform:translateX(-50%);top:10px;width:70px;height:82px;border-radius:48% 48% 45% 45%;background:#303943}
@@ -216,12 +216,31 @@ main{padding:14px}
 .silhouette-label{position:absolute;left:50%;transform:translateX(-50%);bottom:4px;white-space:nowrap;padding:5px 12px;border-radius:999px;background:#101b28dd;color:#fff;font-size:13px;font-weight:900;letter-spacing:.04em}
 .player-reply{background:#e5edf4;color:#243746;border-left:4px solid #6d879b;border-radius:9px;margin-top:9px}
 .result-text{background:#101b28;color:#f6f7f7;border-radius:9px;padding:9px 11px;margin-top:7px}
+
+/* わたおきば公式ページの紹介PNGを人物表示に利用。読み込み失敗時はJSでシルエットへ戻す。
+   紹介画像は人物が左側に配置されているため、左側だけを見せる。 */
+.wata-char{overflow:hidden!important;display:block!important;right:2%!important;top:6px!important;bottom:auto!important;width:245px!important;height:278px!important;filter:drop-shadow(0 8px 8px #0005)!important}
+.wata-char .asset-character{position:absolute;left:0;top:0;width:420px;height:500px;max-width:none;object-fit:fill;object-position:left top;display:block;transform-origin:top left}
+.wata-char.girl .asset-character{transform:scale(.58)}
+.wata-char.boy .asset-character{transform:scale(.58)}
+.wata-char .asset-note{position:absolute;right:3px;bottom:3px;z-index:3;background:#101b28cc;color:#fff;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800}
+
+@media(max-width:700px){
+  .wata-char{width:205px!important;height:198px!important;right:0!important;top:7px!important}
+  .wata-char .asset-character{width:420px!important;height:500px!important}
+  .wata-char.girl .asset-character,.wata-char.boy .asset-character{transform:scale(.42)!important}
+}
 /* 選択肢そのものは残し、見出しや説明ラベルだけを表示しない */
 .choice-label,.result-label{display:none!important}
 .page-indicator{display:none}
 /* 時間・日付の変化は会話欄内だけで表示 */
 .time-in-dialog{display:block!important;margin:0 0 8px;padding:7px 10px;background:#25384b;color:#f3d79f;border-left:4px solid #d7aa68;border-radius:7px;text-align:left;font-size:13px}
 .time-in-dialog:empty{display:none!important}
+/* ゲームロゴ */
+.game-brand{text-align:left;padding:2px 0 3px}
+.genre-label{display:inline-block;margin:0 0 2px 4px;font-size:10px;font-weight:900;letter-spacing:.28em;color:#c7d3dc;text-shadow:0 1px 3px #0008}
+.game-brand h1{margin:0;display:inline-block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(28px,6vw,42px);font-weight:900;letter-spacing:.08em;line-height:1.05;color:#fff;text-shadow:0 2px 0 #17222c,0 4px 12px #0009,-1px -1px 0 #d8e1e8,1px 1px 0 #7890a0}
+.game-brand h1::after{content:"";display:block;height:3px;margin-top:6px;width:72%;background:linear-gradient(90deg,#d7aa68,#7d96a6,transparent);border-radius:999px;box-shadow:0 1px 5px #0006}
 @media(max-width:700px){
   .silhouette-char{top:8px!important;right:1%!important;width:145px!important;height:190px!important}
   .silhouette-person{transform:scale(.72);transform-origin:bottom center}
@@ -233,7 +252,7 @@ main{padding:14px}
 </head>
 <body>
 <div id="app">
-<header><div><h1>青春を取り戻せ！</h1><div class="small">青春群像劇</div></div><div class="date" id="dateTop"></div></header>
+<header><div class="game-brand"><div class="genre-label">学園群像劇</div><h1>青春を取り戻せ！</h1></div><div class="date" id="dateTop"></div></header>
 <main>
 <div class="hud-grid">
  <div class="hud-item"><span class="hud-icon" id="seasonIcon">🌸</span><div><div class="hud-caption">月</div><div class="hud-value" id="date"></div></div></div>
@@ -270,7 +289,7 @@ main{padding:14px}
  </details>
 </div>
 <div class="asset-credits" style="margin-top:10px;font-size:10px;color:#69737c;line-height:1.6">
- 素材：背景＝みんちりえ（<a href="https://min-chi.material.jp/" target="_blank" rel="noopener">公式サイト</a>）／人物＝イラストAC（<a href="https://www.ac-illust.com/" target="_blank" rel="noopener">公式サイト</a>）
+ 素材：背景＝みんちりえ（<a href="https://min-chi.material.jp/" target="_blank" rel="noopener">公式サイト</a>）／人物＝わたおきば（<a href="https://wataokiba.net/" target="_blank" rel="noopener">公式サイト</a>）
 </div>
 </main>
 </div>
@@ -301,10 +320,10 @@ const ASSETS = {
   },
   characters:{
     // わたおきば「女性01（学生）」→ 紗季・莉央
-    saki:"assets/chara/wataokiba_female01.png",
-    lio:"assets/chara/wataokiba_female01.png",
+    saki:"https://wataokiba.net/wp-content/uploads/2018/06/%E7%B4%B9%E4%BB%8B%E7%94%BB%E5%83%8F1%E3%83%95%E3%83%AA%E3%83%BC%E7%AB%8B%E3%81%A1%E7%B5%B5%E7%B4%A0%E6%9D%90%E5%A5%B3%E5%AD%90%E5%AD%A6%E7%94%9F-1.png",
+    lio:"https://wataokiba.net/wp-content/uploads/2018/06/%E7%B4%B9%E4%BB%8B%E7%94%BB%E5%83%8F1%E3%83%95%E3%83%AA%E3%83%BC%E7%AB%8B%E3%81%A1%E7%B5%B5%E7%B4%A0%E6%9D%90%E5%A5%B3%E5%AD%90%E5%AD%A6%E7%94%9F-1.png",
     // わたおきば「男性01（学生）」→ 健太
-    kenta:"assets/chara/wataokiba_male01.png",
+    kenta:"https://wataokiba.net/wp-content/uploads/2018/06/%E7%B4%B9%E4%BB%8B%E7%94%BB%E5%83%8F2%E3%83%95%E3%83%AA%E3%83%BC%E7%AB%8B%E3%81%A1%E7%B5%B5%E7%B4%A0%E6%9D%90%E7%94%B7%E5%AD%90%E5%AD%A6%E7%94%9F-1.png",
     // 先生は学生素材ではないため、現時点ではシルエット
     teacher:"assets/chara/character_silhouette.svg"
   },
@@ -323,7 +342,7 @@ function freshState(){
     version:3,month:4,day:8,phase:"morning",stamina:80,money:5000,club:"未所属",
     stats:{study:30,sports:30,art:30,social:30,luck:30},
     relations:JSON.parse(JSON.stringify(charData)),
-    flags:{metMisaki:true,metKenta:false,metLio:false,festival:false},
+    flags:{metKenta:false,metLio:false,festival:false},
     log:[],
     currentId:"apr08_morning",pageIndex:0
   };
@@ -332,26 +351,35 @@ let state=freshState();
 
 const events={
   apr08_morning:{
-    id:"apr08_morning",month:4,day:8,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
-    pages:["4月8日、始業前。新しい席順にまだ少し落ち着かない教室で、僕は自分の席を探していた。","紗季が振り返った。「おはよう。三年生って、始まると意外と普通だね」"],
+    id:"apr08_morning",month:4,day:8,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    pages:["4月8日、始業式の朝。三年生の年度初めに転校してきた僕は、見慣れない教室で自分の席を探していた。","「今日からこのクラスで過ごすことになる。最初は誰も知り合いがいないと思うが、焦らなくていい。まずは周りをよく見てみなさい」"],
     choices:[
-      ["「まあ、これからだろ」",{social:2},{saki:{trust:2}},"apr08_after"],
-      ["「今年は何か残したいな」",{social:2},{saki:{trust:3}},"apr08_after"],
-      ["「まずはクラスに慣れないとな」",{social:1},{saki:{trust:2}},"apr08_after"]
+      ["「ありがとうございます。まずは慣れてみます」",{social:2},{teacher:{trust:2}},"apr08_after"],
+      ["「自分から話しかけてみます」",{social:3},{teacher:{trust:2}},"apr08_after"],
+      ["「少し緊張しています」",{social:1},{teacher:{trust:3}},"apr08_after"]
     ]
   },
   apr08_after:{
-    id:"apr08_after",month:4,day:8,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
-    pages:["放課後。昇降口へ向かっていると、健太が追いついてきた。","「なあ、今日ちょっと部室に寄っていかないか。部活って、外から見るのと中に入るのじゃ全然違うからさ。終わったら飯でも食おうぜ」"],
+    id:"apr08_after",month:4,day:8,phase:"after",speaker:"紗季",who:"saki",bg:"classroom",
+    pages:["放課後。まだ誰とも話せないまま席を片づけていると、前の席の女子が振り返った。","「転校してきたんだよね？　私、紗季。……よかったら、校内を少し案内しようか」"],
     choices:[
-      ["「見てみたい」",{sports:3,stamina:-5},{kenta:{trust:4},"flag:metKenta":true},"apr08_night"],
-      ["「今日は勉強して帰るよ」",{study:3},{kenta:{trust:2}},"apr08_night"],
-      ["「また今度、詳しく聞かせて」",{social:1},{kenta:{trust:3}},"apr08_night"]
+      ["「お願いします」",{social:2,stamina:-3},{saki:{trust:4},"flag:metKenta":false},"apr08_kenta"],
+      ["「今日は勉強して帰るよ」",{study:3},{saki:{trust:2}},"apr08_kenta"],
+      ["「また今度、詳しく聞かせて」",{social:1},{saki:{trust:3}},"apr08_kenta"]
+    ]
+  },
+  apr08_kenta:{
+    id:"apr08_kenta",month:4,day:8,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
+    pages:["校舎を出ようとしたところで、サッカー部らしい男子が声をかけてきた。","「転校生だよな？　俺、健太。部活のことでも学校のことでも、分からないことがあったら聞いてくれよ」"],
+    choices:[
+      ["「ありがとう。助かるよ」",{social:2},{kenta:{trust:4},"flag:metKenta":true},"apr08_night"],
+      ["「サッカー部なんだ？」",{sports:2},{kenta:{trust:3},"flag:metKenta":true},"apr08_night"],
+      ["「まだ何も分からなくてさ」",{social:2},{kenta:{trust:3},"flag:metKenta":true},"apr08_night"]
     ]
   },
   apr08_night:{
     id:"apr08_night",month:4,day:8,phase:"night",speaker:"健太",who:"kenta",bg:"night",email:true,
-    pages:["その日の夜。風呂上がりにスマートフォンを見ると、健太からメッセージが届いていた。","「昼に話せなかったんだけど、部の後輩のことでちょっと悩んでる。明日、時間あったら聞いてくれないか」"],
+    pages:["その日の夜。風呂上がりにスマートフォンを見ると、健太からメッセージが届いていた。","「今日は急に話しかけて悪かったな。明日、学校のことをいろいろ教えるよ」"],
     choices:[
       ["「いいよ。明日聞く」",{social:2},{kenta:{trust:4}},"apr09_morning"],
       ["「話せる範囲でなら」",{social:1},{kenta:{trust:3}},"apr09_morning"],
@@ -807,7 +835,7 @@ bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classro
   const charSrc=ASSETS.characters[e.who]||ASSETS.fallbackCharacter;
   const charLabel=(e.who==="saki"||e.who==="lio"||e.who==="kenta")?"人物：わたおきば":"人物：シルエット";
   document.getElementById("char").innerHTML=`<img class="asset-character" src="${charSrc}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;this.nextElementSibling.textContent='人物：シルエット（素材未配置）';"><div class="asset-note">${charLabel}</div>`;
-  document.getElementById("char").className=`char silhouette-char`;
+  document.getElementById("char").className=`char silhouette-char wata-char ${type}`;
   document.getElementById("name").textContent=e.speaker;
   document.querySelector(".role").textContent=e.email?"メール":speakerRole(e);
   document.getElementById("text").textContent=pages[state.pageIndex];
