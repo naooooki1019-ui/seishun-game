@@ -220,9 +220,10 @@ main{padding:14px}
 /* わたおきば公式ページの紹介PNGを人物表示に利用。読み込み失敗時はJSでシルエットへ戻す。
    紹介画像は人物が左側に配置されているため、左側だけを見せる。 */
 .wata-char{overflow:hidden!important;display:block!important;right:2%!important;top:6px!important;bottom:auto!important;width:245px!important;height:278px!important;filter:drop-shadow(0 8px 8px #0005)!important}
-.wata-char .asset-character{position:absolute;left:0;top:0;width:420px;height:500px;max-width:none;object-fit:fill;object-position:left top;display:block;transform-origin:top left}
-.wata-char.girl .asset-character{transform:scale(.58)}
-.wata-char.boy .asset-character{transform:scale(.58)}
+.wata-crop{position:absolute;left:0;bottom:0;height:100%;width:58%;overflow:hidden;display:flex;align-items:flex-end;justify-content:flex-start}
+.wata-crop .asset-character{position:relative;left:0;top:0;height:100%;width:auto;max-width:none;object-fit:contain;object-position:left bottom;display:block;transform:none}
+.wata-char.girl .wata-crop,.wata-char.boy .wata-crop{width:58%}
+@media(max-width:700px){.wata-crop{width:62%}.wata-crop .asset-character{height:100%;width:auto}}
 .wata-char .asset-note{position:absolute;right:3px;bottom:3px;z-index:3;background:#101b28cc;color:#fff;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800}
 
 /* 選択肢そのものは残し、見出しや説明ラベルだけを表示しない */
@@ -805,7 +806,18 @@ function speakerRole(e){
   return "ナレーション";
 }
 
+function clearConversationUI(){
+  document.getElementById("choices").innerHTML="";
+  document.getElementById("choices").style.display="none";
+  document.getElementById("resultPanel").classList.remove("show");
+  document.getElementById("playerReply").textContent="";
+  document.getElementById("resultText").textContent="";
+  document.getElementById("purchaseNotice").innerHTML="";
+  document.getElementById("timeInDialog").textContent="";
+}
+
 function render(){
+  clearConversationUI();
   const e=currentEvent();
   state.pageIndex=state.pageIndex||0;
   const pages=e.pages||[e.text||""];
@@ -827,7 +839,7 @@ bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classro
   const type=typeMap[e.who]||"boy";
   const charSrc=ASSETS.characters[e.who]||ASSETS.fallbackCharacter;
   const charLabel=(e.who==="saki"||e.who==="lio"||e.who==="kenta")?"人物：わたおきば":"人物：シルエット";
-  document.getElementById("char").innerHTML=`<img class="asset-character" src="${charSrc}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;this.nextElementSibling.textContent='人物：シルエット（素材未配置）';"><div class="asset-note">${charLabel}</div>`;
+  document.getElementById("char").innerHTML=`<div class="wata-crop"><img class="asset-character" src="${charSrc}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;this.closest('.wata-crop').style.overflow='visible';this.closest('.wata-crop').style.width='100%';this.nextElementSibling && (this.nextElementSibling.textContent='人物：シルエット（素材未配置）');"></div><div class="asset-note">${charLabel}</div>`;
   document.getElementById("char").className=`char silhouette-char wata-char ${type}`;
   document.getElementById("name").textContent=e.speaker;
   document.querySelector(".role").textContent=e.email?"メール":speakerRole(e);
@@ -897,6 +909,8 @@ function choose(i){
     state.log.push(`${item}。¥${cost.toLocaleString()}使った。`);
   }
   document.getElementById("resultPanel").classList.add("show");
+  const cb=document.querySelector(".continue");
+  if(cb){ cb.disabled=false; cb.style.display="block"; cb.onclick=continueStory; }
   renderHUDOnly();
 }
 function renderHUDOnly(){
@@ -905,6 +919,7 @@ function renderHUDOnly(){
   document.getElementById("log").innerHTML=state.log.slice(-12).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
 }
 function continueStory(){
+  clearConversationUI();
   const cb=document.querySelector(".continue");
   if(cb){cb.disabled=true;cb.style.display="none";}
   if(!pendingNext) return;
@@ -936,6 +951,7 @@ function continueStory(){
     notice.style.display="block";
     document.getElementById("name").textContent="";
     document.querySelector(".role").textContent="";
+    document.getElementById("pageIndicator").textContent="";
     document.getElementById("text").textContent=sub;
     document.getElementById("pageNext").style.display="block";
     document.getElementById("pageNext").textContent="次へ";
