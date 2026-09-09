@@ -168,7 +168,7 @@ main{padding:14px}
 }
 .result-text{font-size:16px;line-height:1.65;min-height:0;color:#f6f7f7}
 .continue{background:#3f7fc9;border-color:#70a8e7;font-size:15px}
-.page-next{background:#3f7fc9;border-color:#70a8e7}
+.page-next{background:#3f7fc9;border-color:#70a8e7;display:block;width:100%;min-height:42px;margin-top:10px;position:sticky;bottom:0;z-index:5}
 .controls{display:none}
 .bottom{margin-top:8px}
 .choice-label{display:none}
@@ -226,7 +226,7 @@ main{padding:14px}
 @media(max-width:700px){.wata-crop{width:62%}.wata-crop .asset-character{height:100%;width:auto}}
 .wata-char .asset-note{position:absolute;right:3px;bottom:3px;z-index:3;background:#101b28cc;color:#fff;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800}
 
-/* v3.1: 素材表示をゲーム画面に馴染ませ、紹介画像の人物だけを正しく見せる */
+/* v3.2: 素材表示をゲーム画面に馴染ませ、紹介画像の人物だけを正しく見せる */
 .asset-note{display:none!important}
 .wata-char{width:270px!important;height:500px!important;right:3%!important;top:auto!important;bottom:190px!important;overflow:hidden!important;filter:drop-shadow(0 16px 12px #0007)!important}
 .wata-crop{position:absolute;left:0;bottom:0;width:235px;height:100%;overflow:hidden;display:block}
@@ -259,11 +259,44 @@ main{padding:14px}
 .game-brand h1{margin:0;font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic UI","Meiryo",sans-serif;font-size:24px;font-weight:900;letter-spacing:-.06em;line-height:1.05;white-space:nowrap;color:#fff;text-shadow:2px 2px 0 #27577d,0 3px 8px #0008,-1px -1px 0 #8fd8ff,1px 1px 0 #5c9fd0}
 .version-label{margin-top:2px;font-size:8px;font-weight:800;letter-spacing:.08em;color:#b9c7d2}
 @media(max-width:700px){.game-brand{max-width:calc(100% - 72px)}.game-brand h1{font-size:20px;letter-spacing:-.065em}.genre-label{font-size:7px}.version-label{font-size:7px}}
+
+/* v3.2: 「次へ」を常に同じ位置に固定 */
+.dialog{
+  display:flex!important;
+  flex-direction:column!important;
+}
+.dialog .text{
+  flex:0 0 auto;
+}
+.dialog .page-next{
+  flex:0 0 42px;
+}
+.dialog .choices{
+  flex:0 0 auto;
+}
+.dialog .result-panel{
+  flex:0 0 auto;
+}
+@media(max-width:700px){
+  .dialog .page-next{min-height:40px;margin-top:8px}
+}
+
+
+/* v3.2: 佐藤先生専用立ち絵 */
+.teacher-char{
+  position:absolute;z-index:2;right:3%;bottom:185px;width:270px;height:500px;
+  display:block!important;filter:drop-shadow(0 16px 12px #0007)!important;
+}
+.teacher-char svg{width:100%;height:100%;display:block}
+@media(max-width:700px){
+  .teacher-char{width:205px;height:420px;right:2%;bottom:190px}
+}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header><div class="game-brand"><div class="genre-label">学園群像劇</div><h1>青春を取り戻せ！</h1><div class="version-label">v3.1</div></div><div class="date" id="dateTop"></div></header>
+<header><div class="game-brand"><div class="genre-label">学園群像劇</div><h1>青春を取り戻せ！</h1><div class="version-label">v3.2</div></div><div class="date" id="dateTop"></div></header>
 <main>
 <div class="hud-grid">
  <div class="hud-item"><span class="hud-icon" id="seasonIcon">🌸</span><div><div class="hud-caption">月</div><div class="hud-value" id="date"></div></div></div>
@@ -350,7 +383,7 @@ function assetExists(path, callback){
 
 function freshState(){
   return {
-    version:3.1,month:4,day:8,phase:"morning",stamina:80,money:5000,club:"未所属",
+    version:3.2,month:4,day:8,phase:"morning",stamina:80,money:5000,club:"未所属",
     stats:{study:30,sports:30,art:30,social:30,luck:30},
     relations:JSON.parse(JSON.stringify(charData)),
     flags:{metMisaki:true,metKenta:false,metLio:false,festival:false},
@@ -363,7 +396,10 @@ let state=freshState();
 const events={
   apr08_morning:{
     id:"apr08_morning",month:4,day:8,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    pages:["4月8日、始業式の朝。三年生の年度初めに転校してきた僕は、見慣れない教室で自分の席を探していた。","「今日からこのクラスで過ごすことになる。最初は誰も知り合いがいないと思うが、焦らなくていい。まずは周りをよく見てみなさい」"],
+    pages:[
+      "4月8日、始業式の朝。三年生の年度初めに転校してきた僕は、見慣れない教室で自分の席を探していた。",
+      "「今日からこのクラスで過ごすことになる。最初は誰も知り合いがいないと思うが、焦らなくていい」"
+    ],
     choices:[
       ["「ありがとうございます。まずは慣れてみます」",{social:2},{teacher:{trust:2}},"apr08_after"],
       ["「自分から話しかけてみます」",{social:3},{teacher:{trust:2}},"apr08_after"],
@@ -372,315 +408,179 @@ const events={
   },
   apr08_after:{
     id:"apr08_after",month:4,day:8,phase:"after",speaker:"紗季",who:"saki",bg:"classroom",
-    pages:["放課後。まだ誰とも話せないまま席を片づけていると、前の席の女子が振り返った。","「転校してきたんだよね？　私、紗季。……よかったら、校内を少し案内しようか」"],
+    pages:[
+      "放課後。まだ誰とも話せないまま席を片づけていると、前の席の女子が振り返った。",
+      "「転校してきたんだよね？　私、紗季。……よかったら、校内を少し案内しようか」"
+    ],
     choices:[
-      ["「見てみたい」",{sports:3,stamina:-5},{kenta:{trust:4},"flag:metKenta":true},"apr08_night"],
-      ["「今日は勉強して帰るよ」",{study:3},{kenta:{trust:2}},"apr08_night"],
-      ["「また今度、詳しく聞かせて」",{social:1},{kenta:{trust:3}},"apr08_night"]
+      ["「お願いする」",{social:3},{saki:{trust:5}},"apr08_night"],
+      ["「少しだけお願いしてもいい？」",{social:2},{saki:{trust:3}},"apr08_night"],
+      ["「今日は大丈夫。また今度」",{stamina:2},{saki:{trust:2}},"apr08_night"]
     ]
   },
   apr08_night:{
-    id:"apr08_night",month:4,day:8,phase:"night",speaker:"健太",who:"kenta",bg:"night",email:true,
-    pages:["その日の夜。風呂上がりにスマートフォンを見ると、健太からメッセージが届いていた。","「昼に話せなかったんだけど、部の後輩のことでちょっと悩んでる。明日、時間あったら聞いてくれないか」"],
+    id:"apr08_night",month:4,day:8,phase:"night",speaker:"紗季",who:"saki",bg:"night",email:true,
+    pages:[
+      "その日の夜。スマートフォンに、紗季からメールが届いた。",
+      "「今日は急に話しかけてごめんね。転校初日って疲れると思うけど、明日から少しずつ慣れていけば大丈夫だよ」"
+    ],
     choices:[
-      ["「いいよ。明日聞く」",{social:2},{kenta:{trust:4}},"apr09_morning"],
-      ["「話せる範囲でなら」",{social:1},{kenta:{trust:3}},"apr09_morning"],
-      ["「今日は休めよ。明日でいい」",{stamina:2},{kenta:{trust:4}},"apr09_morning"]
+      ["「ありがとう。明日もよろしく」",{social:2},{saki:{trust:4}},"apr09_morning"],
+      ["「助かったよ。明日また話そう」",{social:3},{saki:{trust:4}},"apr09_morning"],
+      ["「こちらこそ。おやすみ」",{stamina:2},{saki:{trust:3}},"apr09_morning"]
     ]
   },
   apr09_morning:{
     id:"apr09_morning",month:4,day:9,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    pages:["4月9日の朝。ホームルームで、佐藤先生が進路調査票を配った。","「三年生だから進路は考えてほしい。ただ、それだけで一年を埋める必要もない」"],
+    pages:[
+      "4月9日の朝。ホームルームのあと、佐藤先生が僕の席まで来た。",
+      "「昨日より少し表情が柔らかくなったな。何か困っていることはないか？」"
+    ],
     choices:[
-      ["進路について質問する",{study:3},{teacher:{trust:4}},"apr09_lunch"],
-      ["話を聞きながらメモする",{study:2},{teacher:{trust:3}},"apr09_lunch"],
-      ["まず今年やりたいことを考える",{social:2},{teacher:{trust:2}},"apr09_lunch"]
-    ]
-  },
-  apr09_lunch:{
-    id:"apr09_lunch",month:4,day:9,phase:"afternoon",speaker:"健太",who:"kenta",bg:"classroom",
-    pages:["その日の昼休み。健太は弁当を食べながら、昨日の話を切り出した。","「後輩が練習でミスしてから、俺に何も相談してこなくなったんだ。部長として、どう声をかければいいと思う？」"],
-    choices:[
-      ["「まず、本人の話を聞けばいいんじゃないか」",{social:3},{kenta:{trust:5}},"apr09_after"],
-      ["「練習のことは、本人に任せてもいいと思う」",{sports:2},{kenta:{trust:3}},"apr09_after"],
-      ["「一緒に練習してみたら？」",{sports:3},{kenta:{trust:4}},"apr09_after"]
+      ["「クラスに馴染めるか少し不安です」",{social:2},{teacher:{trust:5}},"apr09_after"],
+      ["「部活動をどうするか迷っています」",{sports:2},{teacher:{trust:4}},"apr09_after"],
+      ["「今のところ大丈夫です」",{luck:2},{teacher:{trust:3}},"apr09_after"]
     ]
   },
   apr09_after:{
-    id:"apr09_after",month:4,day:9,phase:"after",speaker:"紗季",who:"saki",bg:"classroom",
-    pages:["放課後。放送室では、紗季が文化祭の校内放送について資料を並べていた。","「今年は放送だけじゃなくて、他の部活とも何かできないかな。映像とか音楽とか」"],
+    id:"apr09_after",month:4,day:9,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
+    pages:[
+      "放課後。廊下で、見覚えのない男子生徒が声をかけてきた。もちろん、僕にとっても初対面だ。",
+      "「転校生だよな？　俺、健太。まだこの学校よく分かんないだろ。分からないことあったら聞いてくれよ」"
+    ],
     choices:[
-      ["「美術部や写真部にも声をかけよう」",{art:3,social:2},{saki:{trust:3}},"apr09_night"],
-      ["「まず小さく試してみよう」",{luck:2},{saki:{trust:4}},"apr09_night"],
-      ["「放送部だけでも面白くできそう」",{art:2},{saki:{trust:2}},"apr09_night"]
-    ]
-  },
-  apr09_night:{
-    id:"apr09_night",month:4,day:9,phase:"night",speaker:"紗季",who:"saki",bg:"night",email:true,
-    pages:["その日の夜。スマートフォンに紗季からメッセージが届いた。","「今日話してた企画、少し考えてみるね。明日、クラスでもアイデアを聞いてみようと思う」"],
-    choices:[
-      ["「僕も考えておく」",{art:2},{saki:{trust:3}},"apr10_morning"],
-      ["「クラス全体を巻き込めると面白そう」",{social:3},{saki:{trust:4}},"apr10_morning"],
-      ["「無理しすぎないようにな」",{stamina:2},{saki:{trust:3}},"apr10_morning"]
+      ["「ありがとう。助かるよ」",{social:3},{kenta:{trust:5},"flag:metKenta":true},"apr10_morning"],
+      ["「健太もよろしく」",{social:2},{kenta:{trust:4},"flag:metKenta":true},"apr10_morning"],
+      ["「まずは自分で覚えてみるよ」",{luck:2},{kenta:{trust:2},"flag:metKenta":true},"apr10_morning"]
     ]
   },
   apr10_morning:{
     id:"apr10_morning",month:4,day:10,phase:"morning",speaker:"健太",who:"kenta",bg:"classroom",
-    pages:["翌日4月10日。朝の教室。健太は少し眠そうだった。","「昨日、後輩と話した。結局、練習のことより先に、最近どうしてるか聞いてみたんだ」"],
+    pages:[
+      "翌朝。健太が僕の席まで来た。",
+      "「昨日の話なんだけどさ。俺、部活の後輩にどう声をかければいいか分かんなくて。転校したばっかで悪いけど、ちょっと聞いてくれない？」"
+    ],
     choices:[
-      ["「それでよかったんじゃないか」",{social:2},{kenta:{trust:4}},"apr10_clubchoice"],
-      ["「部長も大変だな」",{social:2},{kenta:{trust:3}},"apr10_clubchoice"],
-      ["「また何かあったら相談してくれ」",{social:3},{kenta:{trust:5}},"apr10_clubchoice"]
-    ]
-  },
-  apr10_clubchoice:{
-    id:"apr10_clubchoice",month:4,day:10,phase:"after",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    pages:["4月10日の放課後。佐藤先生から、入部届について説明を受けた。最初の一週間は、見学をしてから自分の部活を決めることになっている。","「途中で考えが変わってもいい。ただ、自分で選んだ場所には、一度は本気で顔を出してみなさい」"],
-    choices:[
-      ["サッカー部に入る",{sports:4},{teacher:{trust:3},club:"サッカー部"},"apr10_after"],
-      ["放送部に入る",{art:3,social:2},{teacher:{trust:3},club:"放送部"},"apr10_after"],
-      ["美術部に入る",{art:4},{teacher:{trust:3},club:"美術部"},"apr10_after"],
-      ["帰宅部を選ぶ",{study:2,social:2},{teacher:{trust:2},club:"帰宅部"},"apr10_after"]
+      ["「まず本人の話を聞けばいいんじゃない？」",{social:3},{kenta:{trust:5}},"apr10_after"],
+      ["「無理に聞き出さなくてもいいと思う」",{social:2},{kenta:{trust:3}},"apr10_after"],
+      ["「一緒に練習してみたら？」",{sports:3},{kenta:{trust:4}},"apr10_after"]
     ]
   },
   apr10_after:{
-    id:"apr10_after",month:4,day:10,phase:"after",speaker:"莉央",who:"lio",bg:"groupClassroom",
-    pages:["放課後。美術室の前で、派手な髪色の女子生徒がポスターを抱えて歩いていた。","「あ、あなた昨日の人。これ、変じゃない？　文化祭の告知なんだけど、先生に『普通にしろ』って言われてさ」"],
+    id:"apr10_after",month:4,day:10,phase:"after",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    pages:[
+      "放課後。佐藤先生から、部活動の説明を受けた。",
+      "「三年生でも、今から始めることはできる。大事なのは、自分で選んだ場所に一度は本気で顔を出すことだ」"
+    ],
     choices:[
-      ["「普通じゃないところがいいと思う」",{art:3},{lio:{trust:4},"flag:metLio":true},"apr10_night"],
-      ["「文字が少し読みにくいかも」",{art:3},{lio:{trust:3},"flag:metLio":true},"apr10_night"],
-      ["「僕には判断できない。みんなに聞いてみよう」",{social:2},{lio:{trust:4},"flag:metLio":true},"apr10_night"]
+      ["サッカー部を見学する",{sports:3},{teacher:{trust:3},club:"サッカー部"},"apr18_morning"],
+      ["放送部を見学する",{art:3,social:2},{teacher:{trust:3},club:"放送部"},"apr18_morning"],
+      ["美術部を見学する",{art:4},{teacher:{trust:3},club:"美術部"},"apr18_morning"],
+      ["帰宅部にする",{study:2,social:2},{teacher:{trust:2},club:"帰宅部"},"apr18_morning"]
     ]
   },
-  apr10_night:{
-    id:"apr10_night",month:4,day:10,phase:"night",speaker:"莉央",who:"lio",bg:"night",email:true,
-    pages:["その日の夜。知らない番号ではなく、今日交換したばかりの連絡先から通知が来た。","「さっきのポスター、少し直してみた。明日見て。あと、クラスの変な人たちを集めたら面白そうだよね」"],
+  apr18_morning:{
+    id:"apr18_morning",month:4,day:18,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
+    pages:[
+      "それから一週間。毎日が少しずつ過ぎていった。朝の教室で、紗季が声をかけてくる。",
+      "「最初の日より、ずっと普通に話せるようになったね。……転校生って感じ、もうしないかも」"
+    ],
     choices:[
-      ["「それ、面白そうだな」",{art:2},{lio:{trust:4}},"apr11_morning"],
-      ["「まず先生の許可を取ろう」",{study:2},{lio:{trust:3}},"apr11_morning"],
-      ["「明日見せてくれ」",{social:2},{lio:{trust:3}},"apr11_morning"]
+      ["「みんなのおかげだよ」",{social:3},{saki:{trust:5}},"apr25_after"],
+      ["「まだちょっと緊張するけどね」",{social:1},{saki:{trust:3}},"apr25_after"],
+      ["「もっといろんな人と話してみたい」",{social:4},{saki:{trust:4}},"apr25_after"]
     ]
   },
-  apr11_morning:{
-    id:"apr11_morning",month:4,day:11,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    pages:["翌日4月11日。佐藤先生はホームルームの最後に、校内活動の申請について話した。","「やりたいことがあるなら、まず相談しろ。失敗しないことより、周りと話して進めることが大切だ」"],
+  apr25_after:{
+    id:"apr25_after",month:4,day:25,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
+    pages:[
+      "放課後。屋上から校庭を眺める。転校してきたばかりの僕には、少し前まで遠く感じた景色だった。",
+      "一人で過ごすはずだった高校生活が、少しずつ変わり始めている。"
+    ],
     choices:[
-      ["文化祭の企画について相談する",{study:2,social:2},{teacher:{trust:5}},"apr11_after"],
-      ["部活動の見学について聞く",{sports:2},{teacher:{trust:3}},"apr11_after"],
-      ["特に相談せず話を聞く",{study:1},{teacher:{trust:2}},"apr11_after"]
+      ["次の出来事へ",{social:2},{}, "may08_morning"]
     ]
   },
-  apr11_after:{
-    id:"apr11_after",month:4,day:11,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
-    pages:["放課後。健太と一緒にサッカー部の練習を見に行った。グラウンドには、声を出す選手と黙々と走る選手がいる。","健太が小さく笑った。「こういうの、外から見ると変に見えるだろ。でも、俺はこの時間が結構好きなんだ」"],
+  may08_morning:{
+    id:"may08_morning",month:5,day:8,phase:"morning",speaker:"健太",who:"kenta",bg:"corridor",
+    pages:[
+      "5月8日。連休が明け、健太が笑いながら近づいてきた。",
+      "「お前、もうクラスで普通に話してるじゃん。最初の日はどうなるかと思ったけどな」"
+    ],
     choices:[
-      ["「見てるだけでも面白いよ」",{sports:2},{kenta:{trust:3}},"apr11_night"],
-      ["「次は手伝えることある？」",{sports:3,social:2},{kenta:{trust:5}},"apr11_night"],
-      ["「みんな本気なんだな」",{sports:2},{kenta:{trust:4}},"apr11_night"]
+      ["「健太が最初に声をかけてくれたから」",{social:3},{kenta:{trust:5}},"may20_after"],
+      ["「まだまだこれからだよ」",{luck:2},{kenta:{trust:3}},"may20_after"],
+      ["「健太も頼りになるしね」",{social:3},{kenta:{trust:4}},"may20_after"]
     ]
   },
-  apr11_night:{
-    id:"apr11_night",month:4,day:11,phase:"night",speaker:"健太",who:"kenta",bg:"night",email:true,
-    pages:["その日の夜。健太から短いメッセージが届いた。","「今日はありがとな。友達に部活のこと話すの、意外と楽だった。また何かあったら頼むわ。今度はお前の話も聞くからさ」"],
+  may20_after:{
+    id:"may20_after",month:5,day:20,phase:"after",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    pages:[
+      "5月20日。ホームルームのあと、佐藤先生が僕を呼び止めた。",
+      "「転校してきてから、周りをよく見るようになったな。これからは、自分から誰かの力になることも考えてみるといい」"
+    ],
     choices:[
-      ["「いつでもどうぞ」",{social:2},{kenta:{trust:3}},"apr12_morning"],
-      ["「明日はちゃんと休めよ」",{stamina:2},{kenta:{trust:2}},"apr12_morning"],
-      ["「今度は僕の相談も聞いてくれ」",{social:3},{kenta:{trust:4}},"apr12_morning"]
+      ["「相談されたら、ちゃんと話を聞きます」",{social:3},{teacher:{trust:5}},"jun05_morning"],
+      ["「自分から声をかけてみます」",{social:4},{teacher:{trust:4}},"jun05_morning"],
+      ["「まず自分のことを頑張ります」",{study:3},{teacher:{trust:3}},"jun05_morning"]
     ]
   },
-  apr12_morning:{
-    id:"apr12_morning",month:4,day:12,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
-    pages:["4月12日。朝の放送室。紗季は録音機材を前に、文化祭企画のメモを整理していた。","「昨日、先生に相談したら、クラスで試していいって。次はみんなの意見を集めたいな」"],
+  jun05_morning:{
+    id:"jun05_morning",month:6,day:5,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
+    pages:[
+      "6月5日。梅雨の朝。紗季が文化祭の企画メモを見せてくれた。",
+      "「部活だけじゃなくて、クラスでも何か一つ形にしたいな。転校生だった僕くんの意見も聞きたい」"
+    ],
     choices:[
-      ["クラスの意見を聞きに行く",{social:3},{saki:{trust:4}},"apr12_after"],
-      ["企画書を整理する",{study:3},{saki:{trust:3}},"apr12_after"],
-      ["莉央にも相談してみる",{art:3,social:2},{saki:{trust:3},lio:{trust:3}},"apr12_after"]
+      ["「みんなで作れる企画がいい」",{social:4},{saki:{trust:5}},"jun20_after"],
+      ["「まず小さく始めよう」",{study:2},{saki:{trust:4}},"jun20_after"],
+      ["「部活を越えて協力したい」",{art:3,social:3},{saki:{trust:5}},"jun20_after"]
     ]
   },
-  apr12_after:{
-    id:"apr12_after",month:4,day:12,phase:"after",speaker:"莉央",who:"lio",bg:"groupClassroom",
-    pages:["放課後。美術室には、莉央のほかに何人かの生徒が集まっていた。","「こういうの、部活の壁を越えてやったら面白いと思う。絵、音、スポーツ……学校には変な才能が結構あるから」"],
+  jun20_after:{
+    id:"jun20_after",month:6,day:20,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
+    pages:[
+      "6月20日。放課後。健太と並んで校庭を歩く。",
+      "「最初は知らないやつだったのにさ。今はこうやって話すのが普通になったな」"
+    ],
     choices:[
-      ["「じゃあ、まず一人ずつ声をかけよう」",{social:3},{lio:{trust:4}},"apr12_night"],
-      ["「自分の得意なことも考えてみる」",{art:2,luck:2},{lio:{trust:3}},"apr12_night"],
-      ["「健太にも聞いてみよう」",{sports:2,social:2},{lio:{trust:4},kenta:{trust:2}},"apr12_night"]
+      ["「本当にそうだな」",{social:3},{kenta:{trust:5}},"jul10_morning"],
+      ["「まだ知り合って二か月くらいだけどね」",{luck:2},{kenta:{trust:4}},"jul10_morning"],
+      ["「これからもっと思い出を作ろう」",{social:4},{kenta:{trust:5}},"jul10_morning"]
     ]
   },
-  apr12_night:{
-    id:"apr12_night",month:4,day:12,phase:"night",speaker:"紗季",who:"saki",bg:"night",email:true,
-    pages:["その日の夜。紗季からメッセージが届いた。","「今日の話、思ったより広がったね。恋とかそういう話じゃなくて、こういう学校の時間をみんなで残せたらいいなって思った」"],
+  jul10_morning:{
+    id:"jul10_morning",month:7,day:10,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    pages:[
+      "7月10日。終業式が近づき、教室にも夏休みの空気が漂い始めた。",
+      "佐藤先生が言った。「この一学期、お前はよく動いた。転校生として始まったことを考えれば、十分だと思うぞ」"
+    ],
     choices:[
-      ["「それが一番いいと思う」",{social:2},{saki:{trust:4}},"apr13_morning"],
-      ["「みんなで作るほうが面白いな」",{social:3},{saki:{trust:4}},"apr13_morning"],
-      ["「明日、また続きをやろう」",{stamina:2},{saki:{trust:3}},"apr13_morning"]
+      ["「二学期も頑張ります」",{study:2,social:2},{teacher:{trust:5}},"jul17_after"],
+      ["「もっといろんなことをしたいです」",{social:4},{teacher:{trust:4}},"jul17_after"],
+      ["「先生にも色々助けてもらいました」",{social:2},{teacher:{trust:6}},"jul17_after"]
     ]
   },
-  apr13_morning:{
-    id:"apr13_morning",month:4,day:13,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    pages:["翌朝。教室の掲示板には、部活動合同企画の仮案が貼られていた。","佐藤先生は少し離れて眺め、「学校生活は、こういう寄り道が一番覚えているものかもしれんな」と笑った。"],
+  jul17_after:{
+    id:"jul17_after",month:7,day:17,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
+    pages:[
+      "7月17日、終業式。夏休みを前に、僕は教室を見渡した。",
+      "転校してきた日の朝は、誰の名前も知らなかった。それが今は、声をかけてくれる友達がいる。短い一学期だったけれど、僕の高校生活は確かに動き始めていた。"
+    ],
     choices:[
-      ["企画を手伝う",{social:3,art:2},{teacher:{trust:4}},"apr13_after"],
-      ["勉強との両立を考える",{study:3},{teacher:{trust:4}},"apr13_after"],
-      ["まず友達を誘う",{social:3},{teacher:{trust:3}},"apr13_after"]
+      ["一学期を終える",{social:3},{}, "firstterm_ending"]
     ]
   },
-  apr13_after:{
-    id:"apr13_after",month:4,day:13,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
-    pages:["放課後。健太がグラウンドから戻ってきた。「次の練習試合、応援に来るか？」","少し考えてから、笑う。「でも、無理に来なくていい。お互い自分のやることをやろうぜ」"],
-    choices:[
-      ["「時間が合えば行くよ」",{sports:2},{kenta:{trust:3}},"apr13_night"],
-      ["「今度、こっちの企画も見に来てくれ」",{social:2},{kenta:{trust:4}},"apr13_night"],
-      ["「まずはお互い頑張ろう」",{sports:2,study:1},{kenta:{trust:4}},"apr13_night"]
-    ]
-  },
-  apr13_night:{
-    id:"apr13_night",month:4,day:13,phase:"night",speaker:"健太",who:"kenta",bg:"night",email:true,
-    pages:["その日の夜。健太からメッセージが届いた。","「今日、後輩が自分から話しかけてきた。たぶん、昨日お前に相談したからだと思う。ありがとな」"],
-    choices:[
-      ["「健太がちゃんと話を聞いたからだよ」",{social:2},{kenta:{trust:4}},"apr14_morning"],
-      ["「それならよかった」",{social:1},{kenta:{trust:3}},"apr14_morning"],
-      ["「次は僕が困ったら頼るわ」",{social:3},{kenta:{trust:4}},"apr14_morning"]
-    ]
-  },
-  apr14_morning:{
-    id:"apr14_morning",month:4,day:14,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
-    pages:["4月14日。朝の教室は、いつもより少し騒がしい。昨日の企画の話が、クラスのあちこちに広がっていた。","紗季が笑って、「最初は私たち三人だけだったのにね」と言った。"],
-    choices:[
-      ["「まだ始まったばかりだ」",{social:2},{saki:{trust:3}},"apr14_after"],
-      ["「もっと変な人を巻き込もう」",{luck:2,art:2},{saki:{trust:3}},"apr14_after"],
-      ["「まずは形にしよう」",{study:2,art:2},{saki:{trust:4}},"apr14_after"]
-    ]
-  },
-  apr14_after:{
-    id:"apr14_after",month:4,day:14,phase:"after",speaker:"莉央",who:"lio",bg:"groupClassroom",
-    pages:["放課後。莉央が完成したポスターを掲げた。奇抜な色使いは残っているが、文字はずっと読みやすくなっている。","「ほら。普通じゃないけど、ちゃんと伝わる。これなら先生も文句ないでしょ」"],
-    choices:[
-      ["「いいと思う」",{art:3},{lio:{trust:4}},"apr14_night"],
-      ["「前よりずっと見やすい」",{art:2},{lio:{trust:3}},"apr14_night"],
-      ["「次は健太に見せよう」",{social:2},{lio:{trust:3},kenta:{trust:2}},"apr14_night"]
-    ]
-  },
-  apr14_night:{
-    id:"apr14_night",month:4,day:14,phase:"night",speaker:"莉央",who:"lio",bg:"night",email:true,
-    pages:["その日の夜。莉央からメッセージが届いた。","「今日のポスター、クラスで評判よかった。変なままでいいって言ってくれたの、ちょっと嬉しかった」"],
-    choices:[
-      ["「変なところがいいんだよ」",{art:2},{lio:{trust:4}},"apr15_morning"],
-      ["「ちゃんと伝わればいいと思う」",{social:2},{lio:{trust:3}},"apr15_morning"],
-      ["「明日、次の企画を考えよう」",{luck:2},{lio:{trust:3}},"apr15_morning"]
-    ]
-  },
-  apr15_morning:{
-    id:"apr15_morning",month:4,day:15,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    pages:["翌日。佐藤先生は企画書を見ながら、静かにうなずいた。","「よくここまで話を広げたな。だが、勉強も忘れるなよ。三年生の一年は長いようで短い」"],
-    choices:[
-      ["両立する予定を立てる",{study:3,social:2},{teacher:{trust:5}},"apr15_after"],
-      ["まず企画の役割を決める",{social:3},{teacher:{trust:4}},"apr15_after"],
-      ["友達と分担する",{social:4},{teacher:{trust:4}},"apr15_after"]
-    ]
-  },
-  apr15_after:{
-    id:"apr15_after",month:4,day:15,phase:"after",speaker:"紗季",who:"saki",bg:"rooftop",
-    pages:["放課後。屋上に出ると、春の風が少し強かった。","紗季は空を見て、「今年は忙しくなりそう。でも、こういう一年なら悪くないね」と言った。"],
-    choices:[
-      ["「まだまだ面白くできる」",{social:3,luck:2},{saki:{trust:3}},"apr15_night"],
-      ["「無理せず続けよう」",{stamina:3},{saki:{trust:3}},"apr15_night"],
-      ["「みんなでやれば大丈夫だろ」",{social:3},{saki:{trust:4},kenta:{trust:2},lio:{trust:2}},"apr15_night"]
-    ]
-  },
-  apr15_night:{
-    id:"apr15_night",month:4,day:15,phase:"night",speaker:"紗季",who:"saki",bg:"night",email:true,
-    pages:["その日の夜。紗季からメッセージが届いた。","「今日までのこと、少し振り返ってた。まだ四月なのに、クラスの見え方が変わってきた気がする。明日も普通に学校行こうね」"],
-    choices:[
-      ["「明日もいつも通りだな」",{stamina:2},{saki:{trust:3}},"apr16_morning"],
-      ["「次は誰を巻き込もうか」",{social:3,luck:2},{saki:{trust:3}},"apr16_morning"],
-      ["「おやすみ。また明日」",{stamina:3},{saki:{trust:2}},"apr16_morning"]
-    ]
-  },
-  apr16_morning:{
-    id:"apr16_morning",month:4,day:16,phase:"morning",speaker:"ナレーション",who:"narration",bg:"classroom",
-    pages:["翌日4月16日。いつもの教室なのに、少しだけ違って見えた。","まだ何も決まっていない。それでも、誰かの悩みを聞いたり、部活を見に行ったり、くだらない話で笑ったりする時間が増えていた。"],
-    choices:[
-      ["今日も学校生活を続ける",{social:2,study:1},{}, "month_end"]
-    ]
-  },
-  may01_morning:{
-    id:"may01_morning",month:5,day:1,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    pages:["五月一日。新しい月になっても、僕の席から見える景色は少しずつ変わっていた。転校初日のような緊張は、もう少しだけ薄れている。","「四月は慌ただしかったな。五月は、自分で動くことを一つ決めてみるといい」"],
-    choices:[
-      ["クラスの人に自分から話しかける",{social:3},{teacher:{trust:3}},"may01_after"],
-      ["部活動をもっと頑張る",{sports:2,art:2},{teacher:{trust:3}},"may01_after"],
-      ["勉強と学校生活を両立する",{study:3},{teacher:{trust:4}},"may01_after"]
-    ]
-  },
-  may01_after:{
-    id:"may01_after",month:5,day:1,phase:"after",speaker:"紗季",who:"saki",bg:"classroom",
-    pages:["五月最初の放課後。紗季が教室の入口から手を振った。","「新しい月だね。四月より、ちょっとだけこのクラスに馴染んできたんじゃない？」"],
-    choices:[
-      ["「そうかもしれない。みんなと話すのが楽しくなってきた」",{social:3},{saki:{trust:4}},"may01_night"],
-      ["「まだ少し緊張するけどね」",{social:1},{saki:{trust:3}},"may01_night"],
-      ["「これからもっと色々やってみたい」",{luck:2,social:2},{saki:{trust:4}},"may01_night"]
-    ]
-  },
-  may01_night:{
-    id:"may01_night",month:5,day:1,phase:"night",speaker:"紗季",who:"saki",bg:"night",email:true,
-    pages:["その日の夜。紗季からメッセージが届いた。","「四月は転校初日だったのに、もう五月だね。これからもっと色んなことが起きそう。明日も学校で話そうね」"],
-    choices:[
-      ["「うん。明日もよろしく」",{social:2},{saki:{trust:4}},"may02_morning"],
-      ["「こちらこそ。楽しみにしてる」",{luck:2},{saki:{trust:4}},"may02_morning"],
-      ["「まずは無理せずいこう」",{stamina:2},{saki:{trust:3}},"may02_morning"]
-    ]
-  },
-  may02_morning:{
-    id:"may02_morning",month:5,day:2,phase:"morning",speaker:"健太",who:"kenta",bg:"classroom",
-    pages:["五月二日の朝。健太が席の横まで来て、軽く手を上げた。","「おはよう。なんかもう、転校生って感じしなくなったな」"],
-    choices:[
-      ["「それはみんなのおかげだよ」",{social:3},{kenta:{trust:4}},"may02_after"],
-      ["「まだまだこれからだよ」",{luck:2},{kenta:{trust:3}},"may02_after"],
-      ["「健太も最初から話しかけてくれたしね」",{social:2},{kenta:{trust:5}},"may02_after"]
-    ]
-  },
-  may02_after:{
-    id:"may02_after",month:5,day:2,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
-    pages:["放課後。屋上から校庭を眺める。四月の終わりには想像していなかった景色が、少しずつ僕の日常になっていた。","五月は、ここから始まる。"],
-    choices:[["次へ進む",{stamina:3},{},"may03_morning"]]
-  },
-  may03_morning:{
-    id:"may03_morning",month:5,day:3,phase:"morning",speaker:"ナレーション",who:"narration",bg:"classroom",
-    pages:["五月三日。新しい一日が始まった。","僕は自分の席に座り、昨日までとは少し違う気持ちで教室を見渡した。"],
-    choices:[["一日を始める",{stamina:2},{},"may04_morning"]]
-  },
-  may04_morning:{
-    id:"may04_morning",month:5,day:4,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
-    pages:["五月四日の朝。紗季が机の横で立ち止まった。","「今日は放送部の活動があるけど、終わったら少し話さない？　最近のこと、聞きたいんだ」"],
-    choices:[["「もちろん。話そう」",{social:2},{saki:{trust:4}},"may04_after"],["「活動が終わってからでいいよ」",{stamina:1},{saki:{trust:3}},"may04_after"]]
-  },
-  may04_after:{
-    id:"may04_after",month:5,day:4,phase:"after",speaker:"健太",who:"kenta",bg:"classroom",
-    pages:["放課後。健太も合流して、三人で文化祭の企画について話すことになった。","「せっかくだし、今度はクラス全体を巻き込んでみようぜ」"],
-    choices:[["「やってみよう」",{social:3,luck:2},{kenta:{trust:4}},"may04_night"],["「まずはできることを整理しよう」",{study:2,social:1},{kenta:{trust:3}},"may04_night"]]
-  },
-  may04_night:{
-    id:"may04_night",month:5,day:4,phase:"night",speaker:"健太",who:"kenta",bg:"night",email:true,
-    pages:["その日の夜。健太からメッセージが届いた。","「今日の話、けっこう面白かったな。明日、先生にも企画を見せてみようぜ」"],
-    choices:[["「いいね。明日持っていこう」",{social:2},{kenta:{trust:4}},"may05_morning"],["「もう少し考えてからにしよう」",{study:2},{kenta:{trust:3}},"may05_morning"]]
-  },
-  may05_morning:{
-    id:"may05_morning",month:5,day:5,phase:"morning",speaker:"佐藤先生",who:"teacher",bg:"classroom",
-    pages:["五月五日の朝。企画書を持って佐藤先生のところへ行った。","「なるほど。四月に比べると、ずいぶん自分から動くようになったな」"],
-    choices:[["「みんなが声をかけてくれたからです」",{social:2},{teacher:{trust:4}},"may05_after"],["「まだまだこれからです」",{luck:2},{teacher:{trust:3}},"may05_after"]]
-  },
-  may05_after:{
-    id:"may05_after",month:5,day:5,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
-    pages:["放課後。屋上から校庭を眺めながら、僕はふと思った。","転校してきたばかりの頃は、ここで過ごす自分の姿なんて想像できなかった。けれど、物語はもう動き始めている。"],
-    choices:[]
-  },
-  month_end:{
-    id:"month_end",month:4,day:16,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
-    pages:["四月の前半。僕はまだ、特別な何者でもない。","けれど、少しずつ「一緒に過ごした」と言える友達が増えている。青春は、たぶんこういうところから始まる。"],
-    choices:[["次の章へ",{stamina:5},{},"nextmonth"]]
+  firstterm_ending:{
+    id:"firstterm_ending",month:7,day:17,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
+    pages:[
+      "――一学期・完。",
+      "夏休みが始まる。僕の高校生活は、まだここからだ。"
+    ],
+    choices:[["一学期をもう一度遊ぶ",{},{},"restart"]]
   }
 };
-function currentEvent(){ return events[state.currentId] || events.apr08_morning; }
+function currentEvent(){ return events[state.currentId] || events.firstterm_ending; }
 
 function applyEffect(effects){
   for(const [k,v] of Object.entries(effects||{})){
@@ -817,6 +717,34 @@ function bgSvg(kind){
   </g>
   <g fill="#e5ca92" opacity=".7"><rect x="382" y="369" width="234" height="12" rx="6"/><rect x="647" y="369" width="234" height="12" rx="6"/></g>
   <path d="M0 557H1000" stroke="#9e815f" stroke-width="5"/>
+  </svg>`;
+}
+
+
+function teacherSvg(){
+  return `<svg viewBox="0 0 420 600" aria-hidden="true">
+    <defs>
+      <linearGradient id="tSkin" x2="0" y2="1"><stop stop-color="#f7d4bd"/><stop offset="1" stop-color="#dcae91"/></linearGradient>
+      <linearGradient id="tSuit" x2="0" y2="1"><stop stop-color="#566675"/><stop offset="1" stop-color="#293947"/></linearGradient>
+    </defs>
+    <ellipse cx="210" cy="578" rx="125" ry="19" fill="#000" opacity=".18"/>
+    <path d="M105 335Q112 270 165 246H255Q308 270 315 335L340 555H80Z" fill="url(#tSuit)"/>
+    <path d="M155 255L210 325L265 255L250 455H170Z" fill="#f4efe5"/>
+    <path d="M183 345H237L225 414H195Z" fill="#3e5264"/>
+    <path d="M166 236V284Q210 307 254 284V236Z" fill="url(#tSkin)"/>
+    <path d="M136 140Q210 78 284 140L268 239Q210 286 152 239Z" fill="url(#tSkin)"/>
+    <circle cx="139" cy="198" r="15" fill="#dcae91"/><circle cx="281" cy="198" r="15" fill="#dcae91"/>
+    <path d="M130 168Q140 91 211 83Q281 90 291 169L268 151Q245 119 210 120Q173 120 150 152Z" fill="#39434b"/>
+    <path d="M145 150Q125 180 143 238" stroke="#2b343b" stroke-width="18" fill="none"/>
+    <path d="M275 150Q295 180 277 238" stroke="#2b343b" stroke-width="18" fill="none"/>
+    <rect x="159" y="188" width="39" height="25" rx="8" fill="none" stroke="#303b44" stroke-width="4"/>
+    <rect x="222" y="188" width="39" height="25" rx="8" fill="none" stroke="#303b44" stroke-width="4"/>
+    <path d="M198 199H222" stroke="#303b44" stroke-width="4"/>
+    <circle cx="179" cy="200" r="5" fill="#26313a"/><circle cx="241" cy="200" r="5" fill="#26313a"/>
+    <path d="M164 225Q180 230 196 225M224 225Q240 230 256 225" stroke="#7f4d4e" stroke-width="3" fill="none"/>
+    <path d="M101 350L62 468M319 350L358 468" stroke="url(#tSkin)" stroke-width="30" stroke-linecap="round"/>
+    <path d="M151 530L125 575M269 530L295 575" stroke="#b9846a" stroke-width="28" stroke-linecap="round"/>
+    <path d="M89 575H157M263 575H331" stroke="#263746" stroke-width="26" stroke-linecap="round"/>
   </svg>`;
 }
 
@@ -981,7 +909,7 @@ function choose(i){
     : e.who==="kenta" ? "健太は満足そうに笑った。「よし、決まりだな。じゃあ次は――」"
     : e.who==="teacher" ? "佐藤先生は小さくうなずいた。「その調子だ。自分で考えて選べばいい」"
     : "その選択を胸に、僕は次の時間へ進んだ。");
-  if(e.id==="month_end") result="五月の終わり。少しずつ、ただのクラスメイトだった三人の距離が近づいていく。高校生活は、まだ始まったばかりだ。";
+  if(e.id==="firstterm_ending") result="一学期が終わった。夏休みを前に、僕の高校生活はここからさらに続いていく。";
   document.getElementById("choices").style.display="none";
   document.getElementById("pageNext").style.display="none";
   document.getElementById("playerReply").textContent=`「${c[0]}」`;
@@ -1009,10 +937,9 @@ function continueStory(){
   const next=pendingNext; pendingNext=null; transitionNext=null;
   const e=currentEvent();
   const oldMonth=state.month, oldDay=state.day, oldPhase=state.phase;
+  if(next==="restart"){ location.reload(); return; }
   if(next==="nextmonth"){
-    state.month++; state.day=1; state.phase="morning";
-    state.stamina=Math.min(100,state.stamina+12);
-    state.currentId="may01_morning";
+    state.currentId="firstterm_ending"; state.pageIndex=0;
   }else{
     const ne=events[next];
     if(ne && ne.month!==state.month){ state.month=ne.month; state.day=1; }
@@ -1026,9 +953,9 @@ function continueStory(){
     transitionNext=state.currentId;
     state.currentId=e.id;
     state.month=oldMonth; state.day=oldDay; state.phase=oldPhase;
-    const title = (next==="nextmonth" || (state.month!==events[next]?.month)) ? `翌日${events[next]?.month||state.month+1}月${events[next]?.day||1}日…` :
-      (oldDay!== (events[next]?.day||oldDay) ? `翌日${events[next]?.month||state.month}月${events[next]?.day||state.day+1}日…` : `その日の${timeInfo(events[next]?.phase||state.phase).label}…`);
-    const sub = title.includes("翌日") ? "新しい一日が始まった。" : "時間がゆっくり進んでいく。";
+    const title = (next==="nextmonth" || (state.month!==events[next]?.month)) ? `${events[next]?.month||state.month+1}月${events[next]?.day||1}日…` :
+      (oldDay!== (events[next]?.day||oldDay) ? `${events[next]?.month||state.month}月${events[next]?.day||state.day+1}日…` : `${timeInfo(events[next]?.phase||state.phase).label}…`);
+    const sub = title.includes("翌日") ? "翌日。" : timeInfo(events[next]?.phase||state.phase).label;
     const notice=document.getElementById("timeInDialog");
     notice.textContent=title;
     notice.style.display="block";
