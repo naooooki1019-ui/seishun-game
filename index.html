@@ -287,23 +287,18 @@ const charData={
   lio:{name:"莉央",affection:18,trust:18,desc:"派手な髪色と古着風の着こなしが目立つ、少し変わったクラスメイト。",type:"quirky",role:"美術部"}
 };
 
-// 素材ファイル設定
-// 背景：みんちりえ、キャラクター：イラストACから各素材をダウンロードし、
-// 下記のファイル名でGitHubリポジトリの assets/ に配置してください。
+// 素材設定
+// 背景：みんちりえの公式配布画像を直接参照。
+// 人物：みんちりえは背景素材サイトのため、人物素材が見つからない場合はシルエットを使用。
 const ASSETS = {
   backgrounds:{
-    classroom:"assets/bg/classroom_day.jpg",
-    corridor:"assets/bg/school_hallway_day.jpg",
-    rooftop:"assets/bg/rooftop.jpg",
-    night:"assets/bg/room_night.jpg",
-    groupClassroom:"assets/bg/classroom_back_day.jpg"
+    classroom:"https://min-chi.material.jp/mc/materials/background-c/back_of_classroom/_back_of_classroom_1.jpg",
+    corridor:"https://min-chi.material.jp/mc/materials/background-c/school_hallway/_school_hallway_1.jpg",
+    rooftop:"https://min-chi.material.jp/mc/materials/background-c/school_rooftop/_school_rooftop_1.jpg",
+    night:"https://min-chi.material.jp/mc/materials/background-c/single_room3/_single_room3_3.jpg",
+    groupClassroom:"https://min-chi.material.jp/mc/materials/background-c/back_of_classroom/_back_of_classroom_1.jpg"
   },
-  characters:{
-    saki:"assets/chara/girl_student.png",
-    kenta:"assets/chara/boy_student.png",
-    teacher:"assets/chara/teacher.png",
-    lio:"assets/chara/quirky_girl_student.png"
-  },
+  characters:{},
   fallbackCharacter:"assets/chara/character_silhouette.svg"
 };
 
@@ -800,7 +795,7 @@ function render(){
 bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classroom}" alt="学校の背景" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="bg-fallback" style="display:none;width:100%;height:100%;">${bgSvg(e.bg)}</div><div class="asset-note">背景：みんちりえ</div>`;
   const typeMap={saki:"girl",lio:"girl",kenta:"boy",teacher:"teacher"};
   const type=typeMap[e.who]||"boy";
-  document.getElementById("char").innerHTML=`<img class="asset-character" src="${ASSETS.characters[e.who]||ASSETS.fallbackCharacter}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;"><div class="asset-note">人物：イラストAC</div>`;
+  document.getElementById("char").innerHTML=`<img class="asset-character" src="${ASSETS.characters[e.who]||ASSETS.fallbackCharacter}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;"><div class="asset-note">人物：シルエット（みんちりえに人物素材がないため）</div>`;
   document.getElementById("char").className=`char silhouette-char`;
   document.getElementById("name").textContent=e.speaker;
   document.querySelector(".role").textContent=e.email?"メール":speakerRole(e);
