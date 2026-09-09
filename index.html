@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>青春を取り戻せ！ v1.8</title>
+<title>青春を取り戻せ！ v2.1</title>
 <style>
 *{box-sizing:border-box}
 :root{--ink:#18212b;--paper:#f4efe5;--gold:#d7aa68;--navy:#1a2635}
@@ -32,7 +32,10 @@ main{padding:14px}
  background:#8aaabd;box-shadow:0 12px 34px #0006;
  isolation:isolate;
 }
-.bg{position:absolute;inset:0;z-index:0}
+.bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+.bg img{width:100%;height:100%;object-fit:cover;display:block}
+.asset-note{position:absolute;left:10px;bottom:10px;z-index:6;font-size:9px;color:#fff;background:#0008;padding:4px 7px;border-radius:6px;opacity:.75}
+.char .asset-character{height:100%;width:auto;max-width:58%;object-fit:contain;object-position:center bottom;display:block;margin:0 auto;filter:drop-shadow(0 8px 12px #0005)}
 .bg svg{width:100%;height:100%;display:block;filter:saturate(.82) contrast(1.08)}
 .scene:after{
  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -115,14 +118,14 @@ main{padding:14px}
 }
 
 /* v1.5 visual/UI refresh */
-.hud-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:7px}
+.hud-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr 1.35fr;gap:7px}
 .hud-item{display:flex;align-items:center;gap:7px;padding:8px 10px;background:#fff;border:1px solid #ded5c7;border-radius:10px;box-shadow:0 4px 14px #0000000c}
 .hud-icon{font-size:19px;line-height:1}.hud-caption{font-size:9px;color:#8a765e;font-weight:900;letter-spacing:.08em}.hud-value{font-size:13px;font-weight:900;color:#263544}
 .season-badge{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:900}
 .page-indicator{float:right;color:#cdb58f;font-size:10px;font-weight:900;letter-spacing:.08em;margin-top:3px}
 .text{font-size:17px;line-height:1.82;min-height:105px;white-space:pre-line}
 .dialog{padding-bottom:17px}
-.page-next{margin-top:8px;width:100%;padding:11px;border-radius:10px;border:1px solid #c08b4e;background:#a9743f;color:#fff;font-weight:900;font-family:inherit;font-size:14px}
+.page-next{margin-top:8px;width:100%;padding:11px;border-radius:10px;border:1px solid #c08b4e;background:#a9743f;color:#fff;font-weight:900;font-family:inherit;font-size:14px}.page-next:disabled,.continue:disabled{opacity:.45;pointer-events:none}
 .email-card{background:#f7f4ed;color:#263544;border-radius:10px;padding:12px 13px;border-left:4px solid #a9743f;box-shadow:0 4px 12px #0002}
 .email-meta{font-size:10px;color:#7a6a58;font-weight:900;margin-bottom:6px}
 .email-subject{font-size:15px;font-weight:900;margin-bottom:7px}
@@ -172,9 +175,9 @@ main{padding:14px}
 .generated-bg{display:none!important}
 @media(max-width:700px){
   main{padding:7px}
-  .hud-grid{grid-template-columns:1.1fr 1fr 1fr 1fr;gap:4px}
+  .hud-grid{grid-template-columns:1fr 1fr;gap:4px}.club-hud{grid-column:1/-1}
   .hud-item{padding:6px 7px;gap:5px}
-  .hud-icon{font-size:16px}.hud-caption{font-size:7px}.hud-value{font-size:11px}
+  .hud-icon{font-size:16px}.hud-caption{font-size:7px}.hud-value{font-size:11px}.club-hud .hud-value{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .scene{padding-top:205px}
   .scene .bg{height:205px}
   .scene .char{top:8px;height:198px;width:55vw;right:2%}
@@ -237,6 +240,7 @@ main{padding:14px}
  <div class="hud-item"><span class="hud-icon">❤️</span><div><div class="hud-caption">体力</div><div class="hud-value" id="staminaValue"></div></div></div>
  <div class="hud-item"><span class="hud-icon">💰</span><div><div class="hud-caption">所持金</div><div class="hud-value" id="moneyValue"></div></div></div>
  <div class="hud-item"><span class="hud-icon" id="timeIcon">🌅</span><div><div class="hud-caption">時間帯</div><div class="hud-value" id="timeValue"></div></div></div>
+ <div class="hud-item club-hud"><span class="hud-icon">🏫</span><div><div class="hud-caption">所属部活</div><div class="hud-value" id="clubValue">未所属</div></div></div>
 </div>
 <div class="scene">
  <div class="bg" id="bg"></div><div class="shade"></div><div class="char" id="char"></div>
@@ -265,6 +269,9 @@ main{padding:14px}
    <div class="log" id="log"></div>
  </details>
 </div>
+<div class="asset-credits" style="margin-top:10px;font-size:10px;color:#69737c;line-height:1.6">
+ 素材：背景＝みんちりえ（<a href="https://min-chi.material.jp/" target="_blank" rel="noopener">公式サイト</a>）／人物＝イラストAC（<a href="https://www.ac-illust.com/" target="_blank" rel="noopener">公式サイト</a>）
+</div>
 </main>
 </div>
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
@@ -280,9 +287,36 @@ const charData={
   lio:{name:"莉央",affection:18,trust:18,desc:"派手な髪色と古着風の着こなしが目立つ、少し変わったクラスメイト。",type:"quirky",role:"美術部"}
 };
 
+// 素材ファイル設定
+// 背景：みんちりえ、キャラクター：イラストACから各素材をダウンロードし、
+// 下記のファイル名でGitHubリポジトリの assets/ に配置してください。
+const ASSETS = {
+  backgrounds:{
+    classroom:"assets/bg/classroom_day.jpg",
+    corridor:"assets/bg/school_hallway_day.jpg",
+    rooftop:"assets/bg/rooftop.jpg",
+    night:"assets/bg/room_night.jpg",
+    groupClassroom:"assets/bg/classroom_back_day.jpg"
+  },
+  characters:{
+    saki:"assets/chara/girl_student.png",
+    kenta:"assets/chara/boy_student.png",
+    teacher:"assets/chara/teacher.png",
+    lio:"assets/chara/quirky_girl_student.png"
+  },
+  fallbackCharacter:"assets/chara/character_silhouette.svg"
+};
+
+function assetExists(path, callback){
+  const img=new Image();
+  img.onload=()=>callback(true);
+  img.onerror=()=>callback(false);
+  img.src=path;
+}
+
 function freshState(){
   return {
-    version:2,month:4,day:8,phase:"morning",stamina:80,money:5000,
+    version:3,month:4,day:8,phase:"morning",stamina:80,money:5000,club:"未所属",
     stats:{study:30,sports:30,art:30,social:30,luck:30},
     relations:JSON.parse(JSON.stringify(charData)),
     flags:{metMisaki:true,metKenta:false,metLio:false,festival:false},
@@ -295,7 +329,7 @@ let state=freshState();
 const events={
   apr08_morning:{
     id:"apr08_morning",month:4,day:8,phase:"morning",speaker:"紗季",who:"saki",bg:"classroom",
-    pages:["4月8日、始業前。新しい席順にまだ少し落ち着かない教室で、主人公は自分の席を探していた。","紗季が振り返った。「おはよう。三年生って、始まると意外と普通だね」"],
+    pages:["4月8日、始業前。新しい席順にまだ少し落ち着かない教室で、僕は自分の席を探していた。","紗季が振り返った。「おはよう。三年生って、始まると意外と普通だね」"],
     choices:[
       ["「まあ、これからだろ」",{social:2},{saki:{trust:2}},"apr08_after"],
       ["「今年は何か残したいな」",{social:2},{saki:{trust:3}},"apr08_after"],
@@ -351,7 +385,7 @@ const events={
     id:"apr09_night",month:4,day:9,phase:"night",speaker:"紗季",who:"saki",bg:"night",email:true,
     pages:["その日の夜。スマートフォンに紗季からメッセージが届いた。","「今日話してた企画、少し考えてみるね。明日、クラスでもアイデアを聞いてみようと思う」"],
     choices:[
-      ["「俺も考えておく」",{art:2},{saki:{trust:3}},"apr10_morning"],
+      ["「僕も考えておく」",{art:2},{saki:{trust:3}},"apr10_morning"],
       ["「クラス全体を巻き込めると面白そう」",{social:3},{saki:{trust:4}},"apr10_morning"],
       ["「無理しすぎないようにな」",{stamina:2},{saki:{trust:3}},"apr10_morning"]
     ]
@@ -360,9 +394,19 @@ const events={
     id:"apr10_morning",month:4,day:10,phase:"morning",speaker:"健太",who:"kenta",bg:"classroom",
     pages:["翌日4月10日。朝の教室。健太は少し眠そうだった。","「昨日、後輩と話した。結局、練習のことより先に、最近どうしてるか聞いてみたんだ」"],
     choices:[
-      ["「それでよかったんじゃないか」",{social:2},{kenta:{trust:4}},"apr10_after"],
-      ["「部長も大変だな」",{social:2},{kenta:{trust:3}},"apr10_after"],
-      ["「また何かあったら相談してくれ」",{social:3},{kenta:{trust:5}},"apr10_after"]
+      ["「それでよかったんじゃないか」",{social:2},{kenta:{trust:4}},"apr10_clubchoice"],
+      ["「部長も大変だな」",{social:2},{kenta:{trust:3}},"apr10_clubchoice"],
+      ["「また何かあったら相談してくれ」",{social:3},{kenta:{trust:5}},"apr10_clubchoice"]
+    ]
+  },
+  apr10_clubchoice:{
+    id:"apr10_clubchoice",month:4,day:10,phase:"after",speaker:"佐藤先生",who:"teacher",bg:"classroom",
+    pages:["4月10日の放課後。佐藤先生から、入部届について説明を受けた。最初の一週間は、見学をしてから自分の部活を決めることになっている。","「途中で考えが変わってもいい。ただ、自分で選んだ場所には、一度は本気で顔を出してみなさい」"],
+    choices:[
+      ["サッカー部に入る",{sports:4},{teacher:{trust:3},club:"サッカー部"},"apr10_after"],
+      ["放送部に入る",{art:3,social:2},{teacher:{trust:3},club:"放送部"},"apr10_after"],
+      ["美術部に入る",{art:4},{teacher:{trust:3},club:"美術部"},"apr10_after"],
+      ["帰宅部を選ぶ",{study:2,social:2},{teacher:{trust:2},club:"帰宅部"},"apr10_after"]
     ]
   },
   apr10_after:{
@@ -371,7 +415,7 @@ const events={
     choices:[
       ["「普通じゃないところがいいと思う」",{art:3},{lio:{trust:4},"flag:metLio":true},"apr10_night"],
       ["「文字が少し読みにくいかも」",{art:3},{lio:{trust:3},"flag:metLio":true},"apr10_night"],
-      ["「俺には判断できない。みんなに聞いてみよう」",{social:2},{lio:{trust:4},"flag:metLio":true},"apr10_night"]
+      ["「僕には判断できない。みんなに聞いてみよう」",{social:2},{lio:{trust:4},"flag:metLio":true},"apr10_night"]
     ]
   },
   apr10_night:{
@@ -407,7 +451,7 @@ const events={
     choices:[
       ["「いつでもどうぞ」",{social:2},{kenta:{trust:3}},"apr12_morning"],
       ["「明日はちゃんと休めよ」",{stamina:2},{kenta:{trust:2}},"apr12_morning"],
-      ["「今度は俺の相談も聞いてくれ」",{social:3},{kenta:{trust:4}},"apr12_morning"]
+      ["「今度は僕の相談も聞いてくれ」",{social:3},{kenta:{trust:4}},"apr12_morning"]
     ]
   },
   apr12_morning:{
@@ -461,7 +505,7 @@ const events={
     choices:[
       ["「健太がちゃんと話を聞いたからだよ」",{social:2},{kenta:{trust:4}},"apr14_morning"],
       ["「それならよかった」",{social:1},{kenta:{trust:3}},"apr14_morning"],
-      ["「次は俺が困ったら頼るわ」",{social:3},{kenta:{trust:4}},"apr14_morning"]
+      ["「次は僕が困ったら頼るわ」",{social:3},{kenta:{trust:4}},"apr14_morning"]
     ]
   },
   apr14_morning:{
@@ -527,7 +571,7 @@ const events={
   },
   month_end:{
     id:"month_end",month:4,day:16,phase:"after",speaker:"ナレーション",who:"narration",bg:"rooftop",
-    pages:["四月の前半。主人公はまだ、特別な何者でもない。","けれど、少しずつ「一緒に過ごした」と言える友達が増えている。青春は、たぶんこういうところから始まる。"],
+    pages:["四月の前半。僕はまだ、特別な何者でもない。","けれど、少しずつ「一緒に過ごした」と言える友達が増えている。青春は、たぶんこういうところから始まる。"],
     choices:[["次の章へ",{stamina:5},{},"nextmonth"]]
   }
 };
@@ -554,9 +598,30 @@ function processExtra(extra){
   for(const [k,v] of Object.entries(extra)){
     if(k==="flag:metKenta") state.flags.metKenta=!!v;
     if(k==="flag:metLio") state.flags.metLio=!!v;
+    if(k==="club") state.club=v;
   }
 }
 
+
+const SCHOOL_YEAR=2026;
+function weekdayInfo(month,day){
+  const d=new Date(SCHOOL_YEAR,month-1,day);
+  const labels=["日","月","火","水","木","金","土"];
+  const w=labels[d.getDay()];
+  let note="";
+  if(w==="月") note="小テスト";
+  else if(w==="水") note="部活なし・早帰り";
+  else if(w==="金") note="週末前";
+  return {label:w,note};
+}
+function dateLabel(month,day){
+  const w=weekdayInfo(month,day);
+  return `${month}月${day}日（${w.label}）`;
+}
+function dayRuleText(month,day){
+  const w=weekdayInfo(month,day);
+  return w.note;
+}
 
 function seasonInfo(month){
   if(month===4) return {icon:"🌸",label:"春"};
@@ -721,32 +786,41 @@ function render(){
   const pages=e.pages||[e.text||""];
   if(state.pageIndex>=pages.length) state.pageIndex=pages.length-1;
   const season=seasonInfo(state.month), tm=timeInfo(state.phase);
-  document.getElementById("date").textContent=`${state.month}月${state.day}日`;
-  document.getElementById("dateTop").textContent=`${state.month}月${state.day}日`;
+  state.club=state.club||"未所属";
+  const wd=weekdayInfo(state.month,state.day);
+  document.getElementById("date").textContent=`${state.month}月${state.day}日（${wd.label}）`;
+  document.getElementById("dateTop").textContent=`${dateLabel(state.month,state.day)}${wd.note?"　"+wd.note:""}`;
+  document.getElementById("clubValue").textContent=state.club;
   document.getElementById("seasonIcon").textContent=season.icon;
   document.getElementById("staminaValue").textContent=state.stamina;
   document.getElementById("moneyValue").textContent=`¥${state.money.toLocaleString()}`;
   document.getElementById("timeIcon").textContent=tm.icon;
   document.getElementById("timeValue").textContent=tm.label;
-  document.getElementById("bg").innerHTML=bgSvg(e.bg);
+  const bgEl=document.getElementById("bg");
+bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classroom}" alt="学校の背景" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="bg-fallback" style="display:none;width:100%;height:100%;">${bgSvg(e.bg)}</div><div class="asset-note">背景：みんちりえ</div>`;
   const typeMap={saki:"girl",lio:"girl",kenta:"boy",teacher:"teacher"};
   const type=typeMap[e.who]||"boy";
-  document.getElementById("char").innerHTML=`<div class="silhouette-person ${type}" aria-label="${e.speaker}">
-    <div class="hair"></div><div class="head"></div><div class="neck"></div>
-    <div class="body"></div><div class="arm left"></div><div class="arm right"></div>
-    ${type==="girl"?'<div class="skirt"></div>':''}
-    <div class="leg left"></div><div class="leg right"></div>
-    <div class="silhouette-label">${e.speaker}</div>
-  </div>`;
+  document.getElementById("char").innerHTML=`<img class="asset-character" src="${ASSETS.characters[e.who]||ASSETS.fallbackCharacter}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;"><div class="asset-note">人物：イラストAC</div>`;
   document.getElementById("char").className=`char silhouette-char`;
   document.getElementById("name").textContent=e.speaker;
   document.querySelector(".role").textContent=e.email?"メール":speakerRole(e);
   document.getElementById("text").textContent=pages[state.pageIndex];
   document.getElementById("pageIndicator").textContent=`${state.pageIndex+1} / ${pages.length}`;
   const last=state.pageIndex===pages.length-1;
-  document.getElementById("pageNext").style.display=last?"none":"block"; document.getElementById("pageNext").onclick=nextPage;
-  document.getElementById("choices").innerHTML=last ? e.choices.map((c,i)=>`<button class="choice ${e.email?'email-choice':''}" onclick="choose(${i})"><span class="num">${i+1}</span><span>${c[0]}</span></button>`).join("") : "";
-  document.getElementById("choices").style.display=last?"":"none";
+  const pageBtn=document.getElementById("pageNext");
+  pageBtn.disabled=false;
+  if(e.isNightReply && last){
+    pageBtn.style.display="block";
+    pageBtn.textContent="次へ";
+    pageBtn.onclick=nextPage;
+    pendingNext=e.autoNext;
+  }else{
+    pageBtn.style.display=last?"none":"block";
+    pageBtn.textContent="次へ";
+    pageBtn.onclick=nextPage;
+  }
+  document.getElementById("choices").innerHTML=last ? (e.choices||[]).map((c,i)=>`<button class="choice ${e.email?'email-choice':''}" onclick="choose(${i})"><span class="num">${i+1}</span><span>${c[0]}</span></button>`).join("") : "";
+  document.getElementById("choices").style.display=last && (e.choices||[]).length?"":"none";
   document.getElementById("resultPanel").classList.remove("show");
   document.getElementById("resultText").textContent="";
   document.getElementById("playerReply").textContent="";
@@ -756,7 +830,17 @@ function render(){
 }
 function nextPage(){
   const e=currentEvent(), pages=e.pages||[e.text||""];
-  if((state.pageIndex||0)<pages.length-1){state.pageIndex=(state.pageIndex||0)+1;render();}
+  const btn=document.getElementById("pageNext");
+  if(btn){btn.disabled=true;btn.style.display="none";}
+  if((state.pageIndex||0)<pages.length-1){
+    state.pageIndex=(state.pageIndex||0)+1;
+    render();
+    return;
+  }
+  if(e.isNightReply && e.autoNext){
+    pendingNext=e.autoNext;
+    continueStory();
+  }
 }
 let pendingNext=null;
 let transitionNext=null;
@@ -774,7 +858,7 @@ function choose(i){
     : (e.who==="saki" ? "紗季は少し驚いたあと、ふっと笑った。「うん。それなら、もっと面白くなりそう」"
     : e.who==="kenta" ? "健太は満足そうに笑った。「よし、決まりだな。じゃあ次は――」"
     : e.who==="teacher" ? "佐藤先生は小さくうなずいた。「その調子だ。自分で考えて選べばいい」"
-    : "その選択を胸に、主人公は次の時間へ進んだ。");
+    : "その選択を胸に、僕は次の時間へ進んだ。");
   if(e.id==="month_end") result="五月の終わり。少しずつ、ただのクラスメイトだった三人の距離が近づいていく。高校生活は、まだ始まったばかりだ。";
   document.getElementById("choices").style.display="none";
   document.getElementById("pageNext").style.display="none";
@@ -794,6 +878,8 @@ function renderHUDOnly(){
   document.getElementById("log").innerHTML=state.log.slice(-12).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
 }
 function continueStory(){
+  const cb=document.querySelector(".continue");
+  if(cb){cb.disabled=true;cb.style.display="none";}
   if(!pendingNext) return;
   const next=pendingNext; pendingNext=null; transitionNext=null;
   const e=currentEvent();
@@ -853,7 +939,7 @@ function nextDay(){
 function showModal(html){document.getElementById("modal").innerHTML=html;document.getElementById("overlay").style.display="flex"}
 function closeModal(){document.getElementById("overlay").style.display="none"}
 function saveMenu(){
-  showModal(`<h2>セーブ</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="saveGame(${n})">スロット ${n}<br><small>${state.month}月${state.day}日 / ${events[state.currentId].speaker}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`);
+  showModal(`<h2>セーブ</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="saveGame(${n})">スロット ${n}<br><small>${dateLabel(state.month,state.day)} / ${events[state.currentId].speaker}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`);
 }
 function loadMenu(){
   showModal(`<h2>ロード</h2><div class="slots">${[1,2,3].map(n=>`<button onclick="loadGame(${n})">スロット ${n}<br><small>${localStorage.getItem(GAME_KEY+n)?"データあり":"空"}</small></button>`).join("")}</div><p><button onclick="closeModal()">閉じる</button></p>`);
@@ -871,6 +957,7 @@ function loadGame(n){
     pendingNext=null; transitionNext=null;
     state.pageIndex=0;
     if(!state.currentId) state.currentId="apr08_morning";
+    state.club=state.club||"未所属";
     closeModal();render();
   }catch(e){alert("セーブデータを読み込めませんでした。")}
 }
