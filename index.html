@@ -13,7 +13,7 @@ body{
 }
 #app{max-width:1180px;margin:auto;min-height:100vh;background:var(--paper)}
 header{
- height:78px;padding:12px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between;
+ height:72px;padding:12px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between;
  background:linear-gradient(110deg,#111c29,#263b52 58%,#172330);border-bottom:1px solid #c99958;
 }
 h1{margin:0;font-size:22px;letter-spacing:.08em;font-weight:800}
@@ -219,39 +219,35 @@ main{padding:14px}
 
 /* わたおきば公式ページの紹介PNGを人物表示に利用。読み込み失敗時はJSでシルエットへ戻す。
    紹介画像は人物が左側に配置されているため、左側だけを見せる。 */
-.wata-char{overflow:hidden!important;display:block!important;right:2%!important;top:2px!important;bottom:auto!important;width:178px!important;height:330px!important;filter:drop-shadow(0 8px 8px #0005)!important}
-.wata-char .asset-character{position:absolute;left:0;top:0;width:365px;height:auto;max-width:none;object-fit:cover;object-position:left top;display:block;transform:none!important;mix-blend-mode:multiply}
-.wata-char.girl .asset-character,.wata-char.boy .asset-character{transform:none!important}
+.wata-char{overflow:hidden!important;display:block!important;right:2%!important;top:6px!important;bottom:auto!important;width:245px!important;height:278px!important;filter:drop-shadow(0 8px 8px #0005)!important}
+.wata-char .asset-character{position:absolute;left:0;top:0;width:420px;height:500px;max-width:none;object-fit:fill;object-position:left top;display:block;transform-origin:top left}
+.wata-char.girl .asset-character{transform:scale(.58)}
+.wata-char.boy .asset-character{transform:scale(.58)}
 .wata-char .asset-note{position:absolute;right:3px;bottom:3px;z-index:3;background:#101b28cc;color:#fff;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800}
 
-@media(max-width:700px){
-  .wata-char{width:150px!important;height:205px!important;right:0!important;top:5px!important}
-  .wata-char .asset-character{width:310px!important;height:auto!important;max-width:none!important;object-fit:cover!important;object-position:left top!important;transform:none!important;mix-blend-mode:multiply!important}
-}
 /* 選択肢そのものは残し、見出しや説明ラベルだけを表示しない */
 .choice-label,.result-label{display:none!important}
 .page-indicator{display:none}
 /* 時間・日付の変化は会話欄内だけで表示 */
 .time-in-dialog{display:block!important;margin:0 0 8px;padding:7px 10px;background:#25384b;color:#f3d79f;border-left:4px solid #d7aa68;border-radius:7px;text-align:left;font-size:13px}
 .time-in-dialog:empty{display:none!important}
-/* ゲームロゴ：スマホでも改行・画面外へのはみ出しを防止 */
-.game-brand{min-width:0;max-width:calc(100% - 82px);text-align:left;padding:0 0 2px;overflow:visible}
-.genre-label{display:block;margin:0 0 2px 2px;font-size:9px;font-weight:900;letter-spacing:.18em;color:#c7d3dc;text-shadow:0 1px 3px #0008;white-space:nowrap}
-.game-brand h1{margin:0;display:block;font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic UI","Meiryo",sans-serif;font-size:clamp(18px,5.5vw,30px);font-weight:900;letter-spacing:-.01em;line-height:1.08;color:#fff;white-space:nowrap;max-width:none;overflow:visible;text-overflow:clip;text-shadow:0 2px 0 #17304a,0 4px 10px #0008,-1px -1px 0 #8fd8ff,1px 1px 0 #5c9fd0}
-.game-brand h1::after{content:"";display:block;height:2px;margin-top:4px;width:68%;background:linear-gradient(90deg,#d7aa68,#7d96a6,transparent);border-radius:999px;box-shadow:0 1px 5px #0006}
+/* ゲームロゴ：ポップなゴシック体。スマホでも「！」まで必ず収める */
+.game-brand{min-width:0;max-width:calc(100% - 90px);text-align:left;padding:1px 0 2px;overflow:visible}
+.genre-label{display:block;margin:0 0 2px 2px;font-size:9px;font-weight:900;letter-spacing:.16em;color:#e7f4ff;text-shadow:0 1px 3px #0008;white-space:nowrap}
+.game-brand h1{margin:0;display:block;font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic UI","Meiryo",sans-serif;font-size:clamp(19px,5.6vw,30px);font-weight:900;letter-spacing:-.04em;line-height:1.08;color:#fff;white-space:nowrap;overflow:visible;text-shadow:2px 2px 0 #27577d,0 4px 10px #0008,-1px -1px 0 #8fd8ff,1px 1px 0 #5c9fd0}
+.game-brand h1::after{content:"";display:block;height:2px;margin-top:4px;width:68%;background:linear-gradient(90deg,#ffd36a,#7d96a6,transparent);border-radius:999px}
+@media(max-width:700px){
+  header{height:72px;padding:8px 12px}
+  .game-brand{max-width:calc(100% - 62px)}
+  .game-brand h1{font-size:clamp(18px,5.4vw,25px);letter-spacing:-.055em}
+  .genre-label{font-size:8px;letter-spacing:.12em}
+}
 @media(max-width:700px){
   .silhouette-char{top:8px!important;right:1%!important;width:145px!important;height:190px!important}
   .silhouette-person{transform:scale(.72);transform-origin:bottom center}
   .silhouette-label{font-size:11px;padding:4px 9px}
   .scene{padding-top:205px}
   .player-reply{font-size:15px}
-}
-
-@media(max-width:700px){
-  header{padding-left:14px;padding-right:14px}
-  .game-brand{max-width:calc(100% - 72px)}
-  .game-brand h1{font-size:clamp(18px,5.8vw,25px);letter-spacing:-.025em}
-  .genre-label{font-size:8px;letter-spacing:.14em}
 }
 </style>
 </head>
@@ -272,13 +268,13 @@ main{padding:14px}
  <div class="dialog">
  <div class="time-in-dialog" id="timeInDialog" style="display:none"></div>
  <div class="name-row"><div class="name" id="name"></div><span class="role">クラスメイト</span></div>
- <div class="page-indicator" id="pageIndicator"></div><div style="clear:both"></div><div class="text" id="text"></div><button type="button" class="page-next" id="pageNext">次へ</button>
+ <div class="page-indicator" id="pageIndicator"></div><div style="clear:both"></div><div class="text" id="text"></div><button type="button" class="page-next" id="pageNext" onclick="nextPage()">次へ</button>
  <div class="choices" id="choices"></div>
  <div class="result-panel" id="resultPanel">
    <div class="player-reply" id="playerReply"></div>
    <div class="result-text" id="resultText"></div>
    <div id="purchaseNotice"></div>
-   <button type="button" class="continue" id="continueButton">次へ</button>
+   <button class="continue" onclick="continueStory()">次へ</button>
  </div>
 </div>
 </div>
@@ -347,7 +343,7 @@ function freshState(){
     version:3,month:4,day:8,phase:"morning",stamina:80,money:5000,club:"未所属",
     stats:{study:30,sports:30,art:30,social:30,luck:30},
     relations:JSON.parse(JSON.stringify(charData)),
-    flags:{metKenta:false,metLio:false,festival:false},
+    flags:{metMisaki:true,metKenta:false,metLio:false,festival:false},
     log:[],
     currentId:"apr08_morning",pageIndex:0
   };
@@ -368,23 +364,14 @@ const events={
     id:"apr08_after",month:4,day:8,phase:"after",speaker:"紗季",who:"saki",bg:"classroom",
     pages:["放課後。まだ誰とも話せないまま席を片づけていると、前の席の女子が振り返った。","「転校してきたんだよね？　私、紗季。……よかったら、校内を少し案内しようか」"],
     choices:[
-      ["「お願いします」",{social:2,stamina:-3},{saki:{trust:4},"flag:metKenta":false},"apr08_kenta"],
-      ["「今日は勉強して帰るよ」",{study:3},{saki:{trust:2}},"apr08_kenta"],
-      ["「また今度、詳しく聞かせて」",{social:1},{saki:{trust:3}},"apr08_kenta"]
-    ]
-  },
-  apr08_kenta:{
-    id:"apr08_kenta",month:4,day:8,phase:"after",speaker:"健太",who:"kenta",bg:"corridor",
-    pages:["校舎を出ようとしたところで、サッカー部らしい男子が声をかけてきた。","「転校生だよな？　俺、健太。部活のことでも学校のことでも、分からないことがあったら聞いてくれよ」"],
-    choices:[
-      ["「ありがとう。助かるよ」",{social:2},{kenta:{trust:4},"flag:metKenta":true},"apr08_night"],
-      ["「サッカー部なんだ？」",{sports:2},{kenta:{trust:3},"flag:metKenta":true},"apr08_night"],
-      ["「まだ何も分からなくてさ」",{social:2},{kenta:{trust:3},"flag:metKenta":true},"apr08_night"]
+      ["「見てみたい」",{sports:3,stamina:-5},{kenta:{trust:4},"flag:metKenta":true},"apr08_night"],
+      ["「今日は勉強して帰るよ」",{study:3},{kenta:{trust:2}},"apr08_night"],
+      ["「また今度、詳しく聞かせて」",{social:1},{kenta:{trust:3}},"apr08_night"]
     ]
   },
   apr08_night:{
     id:"apr08_night",month:4,day:8,phase:"night",speaker:"健太",who:"kenta",bg:"night",email:true,
-    pages:["その日の夜。風呂上がりにスマートフォンを見ると、健太からメッセージが届いていた。","「今日は急に話しかけて悪かったな。明日、学校のことをいろいろ教えるよ」"],
+    pages:["その日の夜。風呂上がりにスマートフォンを見ると、健太からメッセージが届いていた。","「昼に話せなかったんだけど、部の後輩のことでちょっと悩んでる。明日、時間あったら聞いてくれないか」"],
     choices:[
       ["「いいよ。明日聞く」",{social:2},{kenta:{trust:4}},"apr09_morning"],
       ["「話せる範囲でなら」",{social:1},{kenta:{trust:3}},"apr09_morning"],
@@ -817,12 +804,6 @@ function speakerRole(e){
   return "ナレーション";
 }
 
-function fallbackCharacter(img,type,name){
-  const parent=img.parentElement;
-  parent.className=`char silhouette-char ${type}`;
-  parent.innerHTML=`${characterSilhouette(type,name)}<div class="asset-note">人物：シルエット（素材未読込）</div>`;
-}
-
 function render(){
   const e=currentEvent();
   state.pageIndex=state.pageIndex||0;
@@ -844,194 +825,51 @@ bgEl.innerHTML=`<img src="${ASSETS.backgrounds[e.bg]||ASSETS.backgrounds.classro
   const typeMap={saki:"girl",lio:"girl",kenta:"boy",teacher:"teacher"};
   const type=typeMap[e.who]||"boy";
   const charSrc=ASSETS.characters[e.who]||ASSETS.fallbackCharacter;
-  const useWata=(e.who==="saki"||e.who==="lio"||e.who==="kenta");
-  const charLabel=useWata?"人物：わたおきば":"人物：シルエット";
-  if(useWata){
-    document.getElementById("char").innerHTML=`<img class="asset-character" src="${charSrc}" alt="${e.speaker}" onerror="this.onerror=null;fallbackCharacter(this,'${type}','${e.speaker}')"><div class="asset-note">${charLabel}</div>`;
-    document.getElementById("char").className=`char wata-char ${type}`;
-  }else{
-    document.getElementById("char").innerHTML=`${characterSilhouette(type,e.speaker)}<div class="asset-note">人物：シルエット</div>`;
-    document.getElementById("char").className=`char silhouette-char ${type}`;
-  }
+  const charLabel=(e.who==="saki"||e.who==="lio"||e.who==="kenta")?"人物：わたおきば":"人物：シルエット";
+  document.getElementById("char").innerHTML=`<img class="asset-character" src="${charSrc}" alt="${e.speaker}" onerror="this.onerror=null;this.src=ASSETS.fallbackCharacter;this.nextElementSibling.textContent='人物：シルエット（素材未配置）';"><div class="asset-note">${charLabel}</div>`;
+  document.getElementById("char").className=`char silhouette-char wata-char ${type}`;
   document.getElementById("name").textContent=e.speaker;
   document.querySelector(".role").textContent=e.email?"メール":speakerRole(e);
   document.getElementById("text").textContent=pages[state.pageIndex];
   document.getElementById("pageIndicator").textContent=`${state.pageIndex+1} / ${pages.length}`;
-  const replyBox=document.getElementById("playerReply");
-  const resultBox=document.getElementById("resultText");
-  const resultPanel=document.getElementById("resultPanel");
-  replyBox.style.display="none";
-  resultBox.style.display="block";
-  resultPanel.classList.remove("show");
-  document.getElementById("resultText").textContent="";
-  document.getElementById("playerReply").textContent="";
-  if(e.isNightReply && e.playerReply){
-    replyBox.textContent=`僕「${e.playerReply.replace(/^「|」$/g,'')}」`;
-    replyBox.style.display="block";
-    resultBox.style.display="none";
-    resultPanel.classList.add("show");
-  }else{
-    replyBox.style.display="none";
-    resultBox.style.display="block";
-    resultPanel.classList.remove("show");
-  }
   const last=state.pageIndex===pages.length-1;
   const pageBtn=document.getElementById("pageNext");
   pageBtn.disabled=false;
-  // 最終ページでも選択肢がない場合は「次へ」を表示する。
-  const hasChoices=Array.isArray(e.choices) && e.choices.length>0;
-  pageBtn.style.display=(last && hasChoices && !e.isNightReply) ? "none" : "block";
-  pageBtn.textContent="次へ";
-  pageBtn.onclick=function(ev){ ev.preventDefault(); nextPage(); };
-  if(e.isNightReply && last) pendingNext=e.autoNext;
-  const cont=document.getElementById("continueButton");
-  if(cont) {
-    cont.disabled=false;
-    cont.style.display="none";
-    cont.onclick=continueStory;
+  if(e.isNightReply && last){
+    pageBtn.style.display="block";
+    pageBtn.textContent="次へ";
+    pageBtn.onclick=nextPage;
+    pendingNext=e.autoNext;
+  }else{
+    pageBtn.style.display=last?"none":"block";
+    pageBtn.textContent="次へ";
+    pageBtn.onclick=nextPage;
   }
   document.getElementById("choices").innerHTML=last ? (e.choices||[]).map((c,i)=>`<button class="choice ${e.email?'email-choice':''}" onclick="choose(${i})"><span class="num">${i+1}</span><span>${c[0]}</span></button>`).join("") : "";
   document.getElementById("choices").style.display=last && (e.choices||[]).length?"":"none";
+  document.getElementById("resultPanel").classList.remove("show");
+  document.getElementById("resultText").textContent="";
+  document.getElementById("playerReply").textContent="";
   document.getElementById("purchaseNotice").innerHTML="";
   document.getElementById("timeInDialog").textContent="";
   document.getElementById("log").innerHTML=state.log.slice(-12).reverse().map(x=>`・${x}`).join("<br>")||"まだ記録はありません。";
 }
 function nextPage(){
-  const e=currentEvent();
-  const pages=e.pages||[e.text||""];
+  const e=currentEvent(), pages=e.pages||[e.text||""];
   const btn=document.getElementById("pageNext");
-  if(!e || !pages.length) return;
-
-  // 「次へ」は1クリックにつき1回だけ処理。先に無効化しすぎて
-  // 初回表示で止まることがないよう、画面更新後にrender()へ任せる。
-  if(!e) return;
-  // 画面更新のたびにonclickを確実に再設定しているため、
-  // busyロックで初回操作を取りこぼさない。
-  if((state.pageIndex||0) < pages.length-1){
+  if(btn){btn.disabled=true;btn.style.display="none";}
+  if((state.pageIndex||0)<pages.length-1){
     state.pageIndex=(state.pageIndex||0)+1;
     render();
     return;
   }
-
   if(e.isNightReply && e.autoNext){
     pendingNext=e.autoNext;
-    const b=document.getElementById("pageNext");
-    if(b) b.style.display="none";
     continueStory();
-    return;
-  }
-
-  // 通常イベントの最終ページは選択肢を選んで進む仕様。
-  // 選択肢がないイベントだけは、そのまま次へ進める。
-  if(!(e.choices||[]).length && e.next){
-    pendingNext=e.next;
-    continueStory();
-  }else{
-    const b=document.getElementById("pageNext");
-    if(b) b.dataset.busy="0";
   }
 }
-
 let pendingNext=null;
 let transitionNext=null;
-function choiceReaction(e, i, text){
-  const reactions={
-    apr08_morning:[
-      '佐藤先生はうなずいた。「それでいい。最初の数日は、無理に馴染もうとしなくていいからな」',
-      '佐藤先生は少し安心したように笑った。「そうだな。ただ、無理のない範囲でいい。困ったら私に言いなさい」',
-      '佐藤先生は穏やかにうなずいた。「緊張するのは当然だ。今日は教室の空気を知るだけでも十分だよ」'
-    ],
-    apr08_after:[
-      '紗季はほっとしたように笑った。「うん。じゃあ、まず職員室と昇降口だけ案内するね」',
-      '紗季は一瞬きょとんとしてから、「そっか。じゃあ今日は邪魔しないね。また明日、分からないことがあったら聞いて」',
-      '紗季は笑ってうなずいた。「もちろん。転校初日だし、今日は無理しなくていいよ」'
-    ],
-    apr08_kenta:[
-      '健太は手を上げて笑った。「おう。転校初日って何かと分からないよな。遠慮なく聞いてくれ」',
-      '「そう。俺、サッカー部で部長やってるんだ。放課後ならグラウンドにいること多いぜ」',
-      '健太はうなずいた。「だよな。俺も最初の頃は校舎のどこに何があるか全然覚えられなかったよ」'
-    ],
-    apr09_morning:[
-      '佐藤先生は調査票を指して、「いい質問だ。今すぐ答えを決めなくてもいいが、考え始めることは大切だ」と答えた',
-      '先生は「それなら後で見返せるな」とうなずいた。「分からないところは空欄のままでいい。まずは話を聞こう」',
-      '佐藤先生は少し笑った。「それも大事だな。やりたいことが見えてくれば、進路の考え方も変わってくる」'
-    ],
-    apr09_lunch:[
-      '健太は箸を止めて、「やっぱりそうかな。練習の話をする前に、まず本人のことを聞いてみるよ」とうなずいた',
-      '健太は少し考えて、「任せるだけだと、俺から逃げてるみたいに感じさせるかもしれないな」とつぶやいた',
-      '健太は笑って、「それなら自然に話せそうだな。一緒に練習しながら聞いてみる」と言った'
-    ],
-    apr09_after:[
-      '紗季は目を輝かせた。「それいいね。美術ならポスター、写真なら記録映像もできそう」',
-      '紗季はうなずいた。「うん、いきなり大きくするより、そのほうがみんな参加しやすいかも」',
-      '紗季は少し考えて、「たしかに。放送部だけでもできることは多いし、まず形にしてみようかな」'
-    ],
-    apr10_morning:[
-      '健太は肩の力を抜いて、「だよな。話してみたら、思ってたより普通に聞いてくれた」と笑った',
-      '健太は苦笑した。「まあな。でも部長だからって、全部俺が抱える必要もないのかもしれない」',
-      '健太は嬉しそうに笑った。「ありがとな。じゃあ俺も、お前が困ったときはちゃんと聞くわ」'
-    ],
-    apr10_after:[
-      '莉央は嬉しそうにポスターを見下ろした。「でしょ？　普通じゃないからこそ、目に止まるんだよ」',
-      '莉央はポスターを見直して、「やっぱり？　色は気に入ってるから、文字だけ少し直してみようかな」',
-      '莉央は肩をすくめて笑った。「それが一番公平かも。じゃあ、何人かに見てもらおう」'
-    ],
-    apr11_morning:[
-      '佐藤先生はすぐにうなずいた。「いいだろう。企画書があるなら、放課後に一度見せなさい」',
-      '先生は「それなら各部の活動時間を確認しておくといい」と答えた。「見学は歓迎するぞ」',
-      '佐藤先生は穏やかに続けた。「分からないことが出てきたら、そのとき相談すればいい。まずは自分で動いてみなさい」'
-    ],
-    apr11_after:[
-      '健太は嬉しそうに、「だろ？　応援するだけでも結構面白いんだぜ」と笑った',
-      '健太は少し驚いて、「助かる。片付けとかならすぐ頼めるし、今度一緒に来てくれよ」と言った',
-      '健太はグラウンドを見ながら、「そうなんだよ。みんなそれぞれ本気でやってる。だから俺も続けられてるんだ」'
-    ],
-    apr12_morning:[
-      '紗季はすぐにメモを持って立ち上がった。「じゃあ、昼休みに何人かに聞いてみようよ」',
-      '紗季はうなずいた。「うん。人に見せる前に、何をしたい企画なのか整理しておきたいね」',
-      '紗季は嬉しそうに、「莉央なら面白いアイデアを出してくれそう。放課後に声をかけてみる」'
-    ],
-    apr12_after:[
-      '莉央は楽しそうに笑った。「いいね。最初は少人数でいい。面白そうって思った人から声をかけよう」',
-      '莉央は「それ、意外と大事かも」とうなずいた。「自分が何を出せるか分かれば、役割も見えてくるし」',
-      '莉央はすぐにうなずいた。「健太ならスポーツ方面で何かできそう。聞いてみようよ」'
-    ],
-    apr13_morning:[
-      '佐藤先生は満足そうにうなずいた。「そういう姿勢なら、周りも協力しやすいだろう」',
-      '先生は「それなら計画を立てておけ」と言った。「三年生だからこそ、続けられるやり方を考えるんだ」',
-      '佐藤先生は笑って、「友達が増えるのも学校生活の大事な成果だな」と言った'
-    ],
-    apr13_after:[
-      '健太は笑って、「それなら無理のない範囲でな。来てくれたら嬉しいよ」と答えた',
-      '健太は「おう、時間が合えば見に行く」とうなずいた。「俺のほうも見せたいしな」',
-      '健太は拳を軽く握って、「それが一番だな。お互い、自分の場所で頑張ろうぜ」'
-    ],
-    apr14_morning:[
-      '紗季は笑って、「うん。だからこそ、焦らず少しずつ形にしていこう」と答えた',
-      '紗季は吹き出して、「それ、莉央が聞いたら喜びそう。次は誰が来るか楽しみだね」',
-      '紗季は真剣にうなずいた。「そうだね。まずは一つ、ちゃんと完成させよう」'
-    ],
-    apr14_after:[
-      '莉央は満足そうに笑った。「でしょ？　ちゃんと伝わるなら、変わってたっていいんだよ」',
-      '莉央は嬉しそうにポスターを抱え直した。「そこを直したかったんだ。気づいてくれてありがと」',
-      '莉央は「いいね」と笑った。「健太の意見も聞けば、もっと学校っぽい企画になりそう」'
-    ],
-    apr15_morning:[
-      '佐藤先生は「それなら具体的な予定を書いておけ」とうなずいた。「勉強も活動も、続ける工夫が大切だ」',
-      '先生は企画書を指して、「役割が決まれば、責任の所在もはっきりする。いい考えだ」',
-      '佐藤先生は「それが一番だな」と笑った。「一人で背負わず、周りと分担して進めなさい」'
-    ],
-    apr15_after:[
-      '紗季は春の風に髪を揺らしながら、「うん。まだ始まったばかりだし、これからもっと面白くできそう」と笑った',
-      '紗季は空を見上げて、「そうだね。無理して続かなかったら意味がないもんね」とうなずいた',
-      '紗季は笑って、「うん。みんなでやれば、誰かが困ったときにも支えられるしね」'
-    ]
-  };
-  const arr=reactions[e.id];
-  if(arr && arr[i]) return arr[i];
-  return `${e.speaker}は「${text.replace(/^「|」$/g,'')}」を聞いて、少し考えてからうなずいた。`;
-}
-
 function choose(i){
   const e=currentEvent(), c=e.choices[i];
   if(!c) return;
@@ -1039,40 +877,15 @@ function choose(i){
   if(cost>state.money){ alert("所持金が足りません。"); return; }
   applyEffect(c[1]); applyRelations(c[2]); if(c[2]) processExtra(c[2]);
   state.log.push(`${state.month}月${state.day}日　${e.email?"メール返信":"会話"}：「${c[0]}」`);
-  const next=c[3];
+  pendingNext=c[3];
   state.pageIndex=0;
-  if(e.email){
-    const replyId=`${e.id}_reply_${Date.now()}`;
-    const replyText={
-      apr08_night:["「いいよ。明日聞く」","「話せる範囲でなら」","「今日は休めよ。明日でいい」"],
-      apr09_night:["「僕も考えておく」","「クラス全体を巻き込めると面白そう」","「無理しすぎないようにな」"],
-      apr10_night:["「それ、面白そうだな」","「まず先生の許可を取ろう」","「明日見せてくれ」"],
-      apr11_night:["「いつでもどうぞ」","「明日はちゃんと休めよ」","「今度は僕の相談も聞いてくれ」"],
-      apr12_night:["「それが一番いいと思う」","「みんなで作るほうが面白いな」","「明日、また続きをやろう」"],
-      apr13_night:["「健太がちゃんと話を聞いたからだよ」","「それならよかった」","「次は僕が困ったら頼るわ」"],
-      apr14_night:["「変なところがいいんだよ」","「ちゃんと伝わればいいと思う」","「明日、次の企画を考えよう」"],
-      apr15_night:["「明日もいつも通りだな」","「次は誰を巻き込もうか」","「おやすみ。また明日」"]
-    };
-    const reactions={
-      apr08_night:["健太はすぐに返事を返してきた。","「おう。じゃあ明日、分からないところがあったら何でも聞いてくれ」"],
-      apr09_night:["少しして、紗季から返事が届いた。","「ありがとう。じゃあ明日、クラスのみんなにも聞いてみるね」"],
-      apr10_night:["少しして、莉央から返事が届いた。","「でしょ？　じゃあ明日、直したポスターを見せるね」"],
-      apr11_night:["しばらくして、健太から返事が届いた。","「おう。今度はちゃんとお前の話も聞くからな」"],
-      apr12_night:["少しして、紗季から返事が届いた。","「うん。じゃあ明日、またみんなで続きを考えよう」"],
-      apr13_night:["すぐに健太から返事が届いた。","「そう言ってもらえると助かる。今度は俺からも相談するわ」"],
-      apr14_night:["少しして、莉央から返事が届いた。","「そういうところ、分かってるじゃん。明日も続きやろう」"],
-      apr15_night:["少しして、紗季から返事が届いた。","「うん。おやすみ。また明日ね」"]
-    };
-    events[replyId]={id:replyId,month:e.month,day:e.day,phase:e.phase,speaker:e.speaker,who:e.who,bg:e.bg,isNightReply:true,autoNext:next,playerReply:replyText[e.id]?.[i]||c[0],pages:["僕はスマートフォンを手に取り、返信を送った。",reactions[e.id]?.[0]||`${e.speaker}から返事が届いた。`,reactions[e.id]?.[1]||"「また明日話そう」","僕はスマートフォンを伏せ、眠りについた。"],choices:[]};
-    state.currentId=replyId;
-    state.pageIndex=0;
-    pendingNext=next;
-    document.getElementById("choices").style.display="none";
-    render();
-    return;
-  }
-  pendingNext=next;
-  const result=choiceReaction(e,i,c[0]);
+  let result=e.email
+    ? "返信を送った。しばらくすると、画面が暗くなり、夜が静かに更けていった。"
+    : (e.who==="saki" ? "紗季は少し驚いたあと、ふっと笑った。「うん。それなら、もっと面白くなりそう」"
+    : e.who==="kenta" ? "健太は満足そうに笑った。「よし、決まりだな。じゃあ次は――」"
+    : e.who==="teacher" ? "佐藤先生は小さくうなずいた。「その調子だ。自分で考えて選べばいい」"
+    : "その選択を胸に、僕は次の時間へ進んだ。");
+  if(e.id==="month_end") result="五月の終わり。少しずつ、ただのクラスメイトだった三人の距離が近づいていく。高校生活は、まだ始まったばかりだ。";
   document.getElementById("choices").style.display="none";
   document.getElementById("pageNext").style.display="none";
   document.getElementById("playerReply").textContent=`「${c[0]}」`;
@@ -1124,7 +937,6 @@ function continueStory(){
     document.querySelector(".role").textContent="";
     document.getElementById("text").textContent=sub;
     document.getElementById("pageNext").style.display="block";
-    document.getElementById("pageNext").disabled=false;
     document.getElementById("pageNext").textContent="次へ";
     document.getElementById("pageNext").onclick=transitionContinue;
       return;
@@ -1178,10 +990,6 @@ function loadGame(n){
 function ending(){
   showModal(`<h2>卒業式</h2><p>一年間の青春が、静かに幕を閉じた。</p><p>紗季の好感度：${state.relations.saki.affection}</p><p>総合能力：${Object.values(state.stats).reduce((a,b)=>a+b,0)}</p><button onclick="location.reload()">最初から</button>`);
 }
-const continueButton=document.getElementById("continueButton");
-if(continueButton) continueButton.onclick=continueStory;
-const initialPageButton=document.getElementById("pageNext");
-if(initialPageButton) initialPageButton.onclick=function(ev){ev.preventDefault();nextPage();};
 render();
 </script>
 </body>
